@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TrustCDL · Home V2.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+/* Direzione V2.1: bianco, pulito, senza bordi, ispirata a Trustpilot.
+   Le separazioni si fanno con spazio e fondi grigi tenui, mai con linee.
+   Giallo = colore dei consulenti del lavoro, solo come riempimento con testo scuro sopra.
+   Forme: blocchi e card 20-32px, pulsanti e campi a pillola. */
+:root{
+  --bg:#FFFFFF; --soft:#F5F5F2; --soft-2:#ECECE7; --text:#141414; --muted:#5C5C58;
+  --yellow:#FFC72C; --yellow-hover:#F5B800; --yellow-pale:#FFF4CC; --gold:#7A5600; --empty:#DEDED8;
+  --lift:0 1px 2px rgba(20,20,20,.05), 0 10px 30px -10px rgba(20,20,20,.16);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Instrument Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit;border:0;background:none}
+i[class*="ph"]{line-height:1}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+section{padding:72px 0}
+h1,h2,h3{font-weight:700;letter-spacing:-.025em;line-height:1.1;text-wrap:balance}
+h2{font-size:clamp(1.6rem,2.6vw,2.1rem)}
+
+/* Pulsanti */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 22px;border-radius:999px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .2s,transform .2s}
+.btn:active{transform:scale(.98)}
+.btn-dark{background:var(--text);color:#fff}
+.btn-dark:hover{background:#2E2E2C}
+.btn-yellow{background:var(--yellow);color:var(--text)}
+.btn-yellow:hover{background:var(--yellow-hover)}
+.btn-soft{background:var(--soft);color:var(--text);height:38px;padding:0 16px;font-size:.92rem}
+.btn-soft:hover{background:var(--soft-2)}
+.link{font-weight:600;text-decoration:underline;text-decoration-color:var(--yellow);text-decoration-thickness:3px;text-underline-offset:5px;display:inline-flex;align-items:center;gap:6px}
+.link:hover{text-decoration-color:var(--yellow-hover)}
+
+/* Stelle a quadratini, generate da data-r */
+.stars{display:inline-flex;gap:2px;vertical-align:middle}
+.stars span{width:18px;height:18px;border-radius:3px;display:grid;place-items:center;color:#fff;font-size:12px;background:linear-gradient(90deg,var(--yellow) var(--p,100%),var(--empty) var(--p,100%))}
+.stars.sm span{width:16px;height:16px;font-size:11px}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:20;background:var(--bg);transition:box-shadow .25s}
+.nav.scrolled{box-shadow:0 6px 20px -12px rgba(20,20,20,.22)}
+.nav .wrap{height:68px;display:flex;align-items:center;gap:36px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;font-size:1.2rem;letter-spacing:-.03em}
+.logo-mark{width:30px;height:30px;border-radius:9px;background:var(--yellow);display:grid;place-items:center;font-size:18px}
+.nav-links{display:flex;gap:28px;font-weight:500;font-size:.96rem}
+.nav-links a{color:var(--muted);transition:color .2s}
+.nav-links a:hover{color:var(--text)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-right .plain{font-weight:600;padding:0 14px}
+.nav-right .btn{height:42px;padding:0 18px}
+.menu-btn{display:none;width:42px;height:42px;border-radius:999px;background:var(--soft);place-items:center;font-size:20px;cursor:pointer}
+.mmenu{padding:4px 16px 22px;display:grid;gap:2px}
+.mmenu a:not(.btn){padding:14px 16px;border-radius:14px;font-weight:600;font-size:1.05rem;display:flex;justify-content:space-between;align-items:center}
+.mmenu a:not(.btn):hover{background:var(--soft)}
+.mmenu .btn{margin-top:12px}
+.mmenu[hidden]{display:none}
+
+/* Hero */
+.hero{position:relative;isolation:isolate;overflow:hidden;padding:88px 0 96px;text-align:center}
+.shape{position:absolute;z-index:-1;pointer-events:none}
+.shape.a{width:420px;height:420px;border-radius:50%;background:var(--yellow-pale);top:-210px;left:-120px}
+.shape.b{width:340px;height:220px;border-radius:120px 120px 0 120px;background:var(--yellow);opacity:.55;bottom:-90px;right:-60px}
+.shape.c{width:120px;height:120px;border-radius:50%;background:var(--soft);bottom:70px;left:7%}
+.hero h1{font-size:clamp(2.3rem,5vw,3.6rem);max-width:16ch;margin:0 auto 14px}
+.hero .sub{font-size:1.15rem;color:var(--muted);margin-bottom:34px}
+.search{display:flex;align-items:center;max-width:720px;margin:0 auto;background:#fff;border-radius:999px;box-shadow:var(--lift);padding:6px 6px 6px 8px}
+.field{flex:1;display:flex;align-items:center;gap:10px;padding:0 18px;min-width:0;height:52px;border-radius:999px;transition:background .2s}
+.field:focus-within{background:var(--soft)}
+.field i{color:var(--muted);font-size:19px;flex:none}
+.field input{flex:1;min-width:0;outline:none;font-size:1rem}
+.field input::placeholder{color:#6E6E69}
+.field + .field{position:relative}
+.field + .field::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:1px;background:var(--soft-2)}
+.field:focus-within::before{display:none}
+.search .btn{height:52px;padding:0 26px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.hero-pill{display:inline-flex;align-items:center;gap:8px;margin-top:28px;background:var(--soft);padding:10px 18px;border-radius:999px;font-size:.95rem;color:var(--muted)}
+.hero-pill a{color:var(--text)}
+
+/* Situazioni: si parte dal problema dell'utente, non dal nome del servizio */
+#servizi{padding:16px 0 104px}
+.needs{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:minmax(200px,auto);gap:14px;margin-top:36px}
+.need{position:relative;overflow:hidden;background:var(--soft);border-radius:24px;padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:20px;transition:background .2s,transform .3s cubic-bezier(.16,1,.3,1)}
+.need:hover{background:var(--soft-2);transform:translateY(-3px)}
+.need h3{font-size:1.2rem;line-height:1.2;letter-spacing:-.02em;max-width:16ch}
+.need p{color:var(--muted);font-size:.93rem;margin-top:8px;max-width:30ch}
+.need-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:.88rem;color:var(--muted)}
+.need .go{width:38px;height:38px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:16px;color:var(--text);flex:none;transition:transform .25s cubic-bezier(.16,1,.3,1)}
+.need:hover .go{transform:translateX(3px)}
+.need.big{grid-column:span 2;background:var(--yellow)}
+.need.big:hover{background:var(--yellow-hover)}
+.need.big h3{font-size:clamp(1.6rem,2.6vw,2.2rem);max-width:13ch;line-height:1.08}
+.need.big p{color:rgba(20,20,20,.75);font-size:1.02rem}
+.need.big .need-foot{color:var(--text);font-weight:600}
+.need.wide{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;padding:0;gap:0}
+.need.wide .txt{padding:24px;display:flex;flex-direction:column;justify-content:space-between;gap:20px}
+.need.wide img{width:100%;height:100%;object-fit:cover}
+.svc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:22px}
+.svc-row > span{color:var(--muted);font-weight:500;margin-right:6px;white-space:nowrap}
+.svc-row .pill{white-space:nowrap;padding:8px 14px;font-size:.9rem}
+.head{display:flex;align-items:center;justify-content:space-between;gap:16px}
+
+/* Banner matching */
+.banner{background:var(--yellow-pale);border-radius:28px;padding:40px 48px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center;position:relative;overflow:hidden}
+.banner h2{font-size:clamp(1.4rem,2.2vw,1.8rem);margin-bottom:6px}
+.banner p{color:var(--muted);max-width:52ch}
+.banner .opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.opt{height:40px;padding:0 16px;border-radius:999px;background:#fff;font-weight:600;font-size:.92rem;cursor:pointer;transition:background .2s}
+.opt:hover{background:var(--yellow)}
+.opt[aria-pressed="true"]{background:var(--text);color:#fff}
+
+/* Consulenti */
+.pros{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px}
+.pro{background:var(--soft);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px;transition:background .2s,transform .3s cubic-bezier(.16,1,.3,1)}
+.pro:hover{background:var(--soft-2);transform:translateY(-3px)}
+.pro img{width:64px;height:64px;border-radius:16px;object-fit:cover;margin-bottom:6px}
+.pro h3{font-size:1.06rem;letter-spacing:-.01em}
+.pro .where{font-size:.9rem;color:var(--muted);margin-top:-6px}
+.rating{display:flex;align-items:center;gap:8px;font-size:.9rem;color:var(--muted)}
+.rating b{color:var(--text)}
+.albo{display:inline-flex;align-items:center;gap:6px;font-size:.86rem;font-weight:600;color:var(--gold)}
+.albo i{font-size:16px}
+.pro .sponsor{font-size:.78rem;color:var(--muted);margin-top:auto;padding-top:6px}
+
+/* Verifica */
+.verify{background:var(--soft);border-radius:32px;padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.verify h2{font-size:clamp(1.7rem,3vw,2.4rem);max-width:18ch}
+.verify .lead{color:var(--muted);font-size:1.06rem;margin:14px 0 28px;max-width:46ch}
+.points{display:grid;gap:20px;margin-bottom:32px}
+.point{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start}
+.point .ic{width:44px;height:44px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:21px}
+.point h3{font-size:1.02rem;margin-bottom:2px;letter-spacing:-.01em}
+.point p{color:var(--muted);font-size:.95rem}
+.collage{display:grid;grid-template-columns:1.1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;height:460px}
+.collage img{width:100%;height:100%;object-fit:cover;border-radius:22px}
+.collage img:first-child{grid-row:span 2}
+
+/* Recensioni */
+.reviews{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:28px}
+.rev{background:var(--soft);border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.rev-top{display:flex;align-items:center;gap:10px}
+.ini{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.85rem;background:var(--yellow-pale);color:var(--gold);flex:none}
+.ini.g{background:#fff;color:var(--text)}
+.rev-top b{display:block;font-size:.95rem;line-height:1.2}
+.rev-top small{color:var(--muted);font-size:.8rem}
+.rev p{font-size:.94rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.rev .ok{display:inline-flex;align-items:center;gap:5px;font-size:.78rem;font-weight:600;color:var(--gold)}
+.rev-to{display:flex;align-items:center;gap:10px;margin-top:auto;padding-top:12px}
+.rev-to img{width:32px;height:32px;border-radius:10px;object-fit:cover}
+.rev-to b{display:block;font-size:.88rem;line-height:1.2}
+.rev-to small{color:var(--muted);font-size:.78rem}
+
+/* Numeri */
+.numbers{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:40px;align-items:end}
+.numbers .statement{font-size:clamp(1.4rem,2.4vw,1.9rem);font-weight:600;letter-spacing:-.02em;line-height:1.25}
+.num b{display:block;font-size:clamp(2rem,3.6vw,2.9rem);font-weight:700;letter-spacing:-.04em;line-height:1}
+.num span{display:block;color:var(--muted);font-size:.95rem;margin-top:8px;max-width:20ch}
+.source{color:var(--muted);font-size:.8rem;margin-top:28px}
+
+/* Province */
+.prov{display:grid;grid-template-columns:auto 1fr;gap:12px 28px;margin-top:24px;align-items:baseline}
+.prov h3{font-size:1rem;color:var(--muted);font-weight:600}
+.pills{display:flex;flex-wrap:wrap;gap:8px}
+.pill{background:var(--soft);padding:10px 16px;border-radius:999px;font-weight:600;font-size:.94rem;transition:background .2s}
+.pill span{color:var(--muted);font-weight:500;margin-left:4px}
+.pill:hover{background:var(--yellow)}
+.pill:hover span{color:var(--text)}
+
+/* Per i consulenti */
+.forpro{background:var(--yellow-pale);border-radius:32px;padding:56px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.forpro .kicker{font-weight:600;color:var(--gold);margin-bottom:10px;display:block}
+.forpro h2{font-size:clamp(1.7rem,3vw,2.4rem);max-width:18ch}
+.forpro p{color:var(--muted);margin:14px 0 28px;max-width:44ch;font-size:1.04rem}
+.forpro .actions{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.plans{background:var(--text);color:#fff;border-radius:24px;padding:12px 28px}
+.plan{display:grid;grid-template-columns:1fr auto;gap:2px 16px;padding:18px 0}
+.plan + .plan{box-shadow:0 -1px 0 rgba(255,255,255,.1)}
+.plan b{font-size:1.08rem}
+.plan .price{font-weight:700;font-size:1.08rem;text-align:right;grid-column:auto}
+.plan .price small{font-weight:500;color:rgba(255,255,255,.62);font-size:.85rem}
+.plan span{color:rgba(255,255,255,.66);font-size:.9rem;grid-column:1/-1}
+.plan.hi b::after{content:"Il più scelto";margin-left:10px;background:var(--yellow);color:var(--text);font-size:.72rem;padding:3px 9px;border-radius:999px;vertical-align:2px}
+
+/* Footer */
+footer{background:var(--soft);padding:56px 0 110px;margin-top:72px}
+.foot{display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:32px}
+.foot h4{font-size:.95rem;margin-bottom:14px}
+.foot ul{list-style:none;display:grid;gap:10px;color:var(--muted);font-size:.94rem}
+.foot a:hover{color:var(--text)}
+.foot .note{color:var(--muted);font-size:.88rem;margin-top:16px;max-width:32ch}
+
+/* Selettore versioni (solo demo) */
+.switcher{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:30;display:flex;gap:4px;padding:5px;border-radius:999px;background:var(--text);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.switcher a{white-space:nowrap;padding:8px 14px;border-radius:999px;color:#fff;font-size:.82rem;font-weight:600;opacity:.7}
+.switcher a.on{background:#fff;color:var(--text);opacity:1}
+@media (max-width:480px){.switcher a{padding:8px 9px;font-size:.74rem}.switcher .long{display:none}}
+
+/* Tablet */
+@media (max-width:1024px){
+  .nav-links,.nav-right .plain{display:none}
+  .menu-btn{display:grid}
+  .nav .wrap{gap:16px}
+  #servizi{padding:8px 0 88px}
+  .needs{grid-template-columns:1fr 1fr;grid-auto-rows:minmax(180px,auto)}
+  .svc-row{flex-wrap:nowrap;overflow-x:auto;margin:22px -24px 0;padding:0 24px 6px;scrollbar-width:none}
+  .svc-row::-webkit-scrollbar,.track::-webkit-scrollbar{display:none}
+  .track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:14px;margin:28px -24px 0;padding:0 24px 8px;scrollbar-width:none}
+  .track > *{flex:0 0 40%;scroll-snap-align:start}
+  .reviews.track > *{flex-basis:44%}
+  .verify,.forpro{padding:40px;gap:36px}
+  .collage{height:380px}
+  .numbers{grid-template-columns:repeat(3,1fr);gap:28px}
+  .numbers .statement{grid-column:1/-1}
+}
+@media (max-width:820px){
+  .verify,.forpro{grid-template-columns:1fr}
+  .collage{height:300px}
+  .banner{grid-template-columns:1fr;padding:32px}
+}
+
+/* Telefono */
+@media (max-width:640px){
+  .wrap{padding:0 16px}
+  section{padding:52px 0}
+  h2{font-size:1.5rem}
+  .hero{padding:48px 0 64px}
+  .hero h1{font-size:2.2rem}
+  .hero .sub{font-size:1.02rem;margin-bottom:26px}
+  .shape.a{width:240px;height:240px;top:-130px;left:-90px}
+  .shape.b{width:200px;height:130px;bottom:-60px;right:-50px}
+  .shape.c{display:none}
+  .search{flex-direction:column;align-items:stretch;border-radius:26px;padding:8px}
+  .field{height:50px;padding:0 14px}
+  .field + .field::before{left:14px;right:14px;top:0;bottom:auto;width:auto;height:1px}
+  .search .btn{margin-top:6px}
+  .hero-pill{background:none;padding:0;font-size:.92rem;flex-wrap:wrap;justify-content:center}
+  .nav-right .btn-dark{display:none}
+  .svc-row,.track{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+  #servizi{padding:4px 0 64px}
+  .needs{gap:10px;grid-auto-rows:minmax(150px,auto);margin-top:24px}
+  .need{padding:16px;border-radius:20px;gap:14px}
+  .need h3{font-size:1.02rem}
+  .need:not(.big) p{display:none}
+  .need .go{width:32px;height:32px;font-size:14px}
+  .need-foot{font-size:.8rem}
+  .need.big{padding:22px}
+  .need.big h3{font-size:1.6rem}
+  .need.wide .txt{padding:16px}
+  .track > *{flex-basis:78%}
+  .reviews.track > *{flex-basis:84%}
+  .banner{padding:26px 22px;border-radius:24px}
+  .banner .btn{width:100%}
+  .verify,.forpro{padding:28px 20px;border-radius:26px}
+  .collage{height:240px;gap:10px}
+  .collage img{border-radius:16px}
+  .numbers{grid-template-columns:1fr 1fr;gap:24px 16px}
+  .numbers .num:last-child{grid-column:1/-1}
+  .prov{grid-template-columns:1fr;gap:10px}
+  .prov h3{margin-top:8px}
+  .forpro .actions .btn{width:100%}
+  .plans{padding:6px 20px}
+  footer{margin-top:52px;padding:44px 0 110px}
+  .foot{grid-template-columns:1fr 1fr;gap:28px 16px}
+  .foot > div:first-child{grid-column:1/-1}
+  .switcher{bottom:12px}
+}
+@media (prefers-reduced-motion: reduce){
+  .pro:hover,.need:hover,.need:hover .go{transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="#" class="logo"><span class="logo-mark"><i class="ph-bold ph-seal-check"></i></span>TrustCDL</a>
+    <nav class="nav-links">
+      <a href="#consulenti">Consulenti</a>
+      <a href="#servizi">Servizi</a>
+      <a href="#recensioni">Recensioni</a>
+      <a href="#province">Province</a>
+    </nav>
+    <div class="nav-right">
+      <a href="area-consulente.html" class="plain">Accedi</a>
+      <a href="#per-i-consulenti" class="btn btn-dark">Per i consulenti</a>
+      <button class="menu-btn" aria-label="Apri il menu" aria-expanded="false" aria-controls="mmenu"><i class="ph-bold ph-list"></i></button>
+    </div>
+  </div>
+  <nav class="mmenu" id="mmenu" hidden>
+    <a href="#consulenti">Consulenti<i class="ph ph-caret-right"></i></a>
+    <a href="#servizi">Servizi<i class="ph ph-caret-right"></i></a>
+    <a href="#recensioni">Recensioni<i class="ph ph-caret-right"></i></a>
+    <a href="#province">Province<i class="ph ph-caret-right"></i></a>
+    <a href="area-consulente.html">Accedi<i class="ph ph-caret-right"></i></a>
+    <a href="#per-i-consulenti" class="btn btn-dark">Per i consulenti</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <span class="shape a"></span><span class="shape b"></span><span class="shape c"></span>
+    <div class="wrap">
+      <h1>Trova un consulente del lavoro di cui fidarti</h1>
+      <p class="sub">Profili verificati sull'Albo e recensioni solo da clienti reali.</p>
+      <form class="search" role="search" action="consulenti.html">
+        <label class="field"><span class="sr">Cosa ti serve</span><i class="ph ph-magnifying-glass"></i><input placeholder="Servizio, CCNL o consulente"></label>
+        <label class="field"><span class="sr">Dove</span><i class="ph ph-map-pin"></i><input placeholder="Città o da remoto"></label>
+        <button class="btn btn-yellow">Cerca</button>
+      </form>
+      <div class="hero-pill">Hai già un consulente? <a href="#recensioni" class="link">Scrivi una recensione<i class="ph-bold ph-arrow-right"></i></a></div>
+    </div>
+  </section>
+
+  <section id="consulenti" style="padding-top:56px">
+    <div class="wrap">
+      <div class="head"><h2>I più apprezzati in Puglia e Basilicata</h2><a href="consulenti.html" class="btn btn-soft">Vedi tutti</a></div>
+      <div class="pros track">
+        <a href="consulente-pro.html" class="pro">
+          <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&h=160&fit=crop&crop=faces&q=70" alt="Giulia Lorusso">
+          <h3>Giulia Lorusso</h3>
+          <span class="where">Studio Lorusso, Bari</span>
+          <span class="rating"><span class="stars sm" data-r="4.9"></span><b>4,9</b> (38)</span>
+          <span class="albo"><i class="ph-fill ph-seal-check"></i>Albo verificato</span>
+          <span class="sponsor">In evidenza</span>
+        </a>
+        <a href="consulenti.html" class="pro">
+          <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=160&h=160&fit=crop&crop=faces&q=70" alt="Davide Melchiorre">
+          <h3>Davide Melchiorre</h3>
+          <span class="where">Melchiorre Lavoro STP, Bari</span>
+          <span class="rating"><span class="stars sm" data-r="4.8"></span><b>4,8</b> (29)</span>
+          <span class="albo"><i class="ph-fill ph-seal-check"></i>Albo verificato</span>
+        </a>
+        <a href="consulenti.html" class="pro">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=160&h=160&fit=crop&crop=faces&q=70" alt="Michele De Santis">
+          <h3>Michele De Santis</h3>
+          <span class="where">Studio De Santis, Lecce</span>
+          <span class="rating"><span class="stars sm" data-r="4.8"></span><b>4,8</b> (24)</span>
+          <span class="albo"><i class="ph-fill ph-seal-check"></i>Albo verificato</span>
+        </a>
+        <a href="consulenti.html" class="pro">
+          <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=160&h=160&fit=crop&crop=faces&q=70" alt="Francesca Cirillo">
+          <h3>Francesca Cirillo</h3>
+          <span class="where">Matera e da remoto</span>
+          <span class="rating"><span class="stars sm" data-r="4.9"></span><b>4,9</b> (17)</span>
+          <span class="albo"><i class="ph-fill ph-seal-check"></i>Albo verificato</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0" id="match">
+    <div class="wrap">
+      <div class="banner">
+        <div>
+          <h2>Non sai chi scegliere?</h2>
+          <p>Rispondi a 7 domande. Ti proponiamo 3 consulenti adatti alla tua azienda e la richiesta arriva solo a loro.</p>
+          <div class="opts" role="group" aria-label="Quanti dipendenti hai?">
+            <button class="opt" aria-pressed="false">Nessun dipendente</button>
+            <button class="opt" aria-pressed="false">1-15 dipendenti</button>
+            <button class="opt" aria-pressed="false">16-50</button>
+            <button class="opt" aria-pressed="false">Più di 50</button>
+          </div>
+        </div>
+        <a href="#" class="btn btn-dark">Fatti consigliare</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="servizi">
+    <div class="wrap">
+      <div class="head"><h2>Qual è la tua situazione?</h2><a href="#" class="btn btn-soft">Tutti i servizi</a></div>
+      <div class="needs">
+        <a href="#" class="need big">
+          <div><h3>Sto per assumere il primo dipendente</h3><p>Contratto giusto, incentivi disponibili e quanto ti costa davvero, prima di firmare.</p></div>
+          <div class="need-foot">141 consulenti<span class="go"><i class="ph-bold ph-arrow-right"></i></span></div>
+        </a>
+        <a href="#" class="need">
+          <div><h3>Voglio cambiare consulente</h3><p>Il passaggio senza perdere un cedolino.</p></div>
+          <div class="need-foot">198 consulenti<span class="go"><i class="ph-bold ph-arrow-right"></i></span></div>
+        </a>
+        <a href="#" class="need">
+          <div><h3>Ho una colf o una badante</h3><p>Contratto domestico, contributi e buste paga.</p></div>
+          <div class="need-foot">126 consulenti<span class="go"><i class="ph-bold ph-arrow-right"></i></span></div>
+        </a>
+        <a href="#" class="need">
+          <div><h3>Non so quale CCNL applicare</h3><p>Inquadramenti e livelli corretti.</p></div>
+          <div class="need-foot">164 consulenti<span class="go"><i class="ph-bold ph-arrow-right"></i></span></div>
+        </a>
+        <a href="#" class="need">
+          <div><h3>Ho una vertenza con un dipendente</h3><p>Conciliazione e contenzioso.</p></div>
+          <div class="need-foot">87 consulenti<span class="go"><i class="ph-bold ph-arrow-right"></i></span></div>
+        </a>
+        <a href="#" class="need wide">
+          <div class="txt">
+            <div><h3>Voglio offrire welfare ai dipendenti</h3><p>Buoni pasto, rimborsi e flexible benefit, con i vantaggi fiscali.</p></div>
+            <div class="need-foot">59 consulenti<span class="go"><i class="ph-bold ph-arrow-right"></i></span></div>
+          </div>
+          <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?w=640&h=480&fit=crop&q=70" alt="Un team al lavoro in ufficio">
+        </a>
+      </div>
+      <div class="svc-row">
+        <span>Oppure cerca per servizio</span>
+        <a href="#" class="pill">Buste paga</a>
+        <a href="#" class="pill">Assunzioni</a>
+        <a href="#" class="pill">Contratti e CCNL</a>
+        <a href="#" class="pill">Contenzioso</a>
+        <a href="#" class="pill">Welfare</a>
+        <a href="#" class="pill">Incentivi</a>
+        <a href="#" class="pill">Colf e badanti</a>
+        <a href="#" class="pill">Crisi d'impresa</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="verify">
+        <div>
+          <h2>Solo recensioni di clienti veri</h2>
+          <p class="lead">Prima di pubblicare una recensione controlliamo che chi la scrive sia stato davvero cliente del consulente.</p>
+          <div class="points">
+            <div class="point"><span class="ic"><i class="ph ph-identification-badge"></i></span><div><h3>Albo controllato</h3><p>Iscrizione verificata con l'Ordine provinciale e ricontrollata ogni tre mesi.</p></div></div>
+            <div class="point"><span class="ic"><i class="ph ph-receipt"></i></span><div><h3>Prova del rapporto</h3><p>Fattura o lettera d'incarico, vista solo dal moderatore e poi cancellata.</p></div></div>
+            <div class="point"><span class="ic"><i class="ph ph-hand-palm"></i></span><div><h3>Niente si compra</h3><p>Nessun consulente può pagare per nascondere una recensione.</p></div></div>
+          </div>
+          <a href="#recensioni" class="btn btn-dark">Scrivi una recensione</a>
+        </div>
+        <div class="collage">
+          <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=700&h=920&fit=crop&q=70" alt="Una consulente del lavoro con una cliente">
+          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=600&h=440&fit=crop&q=70" alt="Stretta di mano dopo un incarico">
+          <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=440&fit=crop&q=70" alt="Riunione in uno studio professionale">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="recensioni" style="padding-top:0">
+    <div class="wrap">
+      <div class="head"><h2>Recensioni recenti</h2><a href="#" class="btn btn-soft">Vedi tutte</a></div>
+      <div class="reviews track">
+        <article class="rev">
+          <div class="rev-top"><span class="ini">ML</span><div><b>Marco L.</b><small>Ristorante, 12 dipendenti</small></div></div>
+          <span class="stars sm" data-r="5"></span>
+          <p>Ci ha seguiti nel passaggio al CCNL Turismo senza un errore sui cedolini. Risponde sempre in giornata, anche ad agosto.</p>
+          <span class="ok"><i class="ph-fill ph-receipt"></i>Verificata con fattura</span>
+          <div class="rev-to"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop&crop=faces&q=70" alt=""><div><b>Giulia Lorusso</b><small>Bari</small></div></div>
+        </article>
+        <article class="rev">
+          <div class="rev-top"><span class="ini g">AP</span><div><b>Anna P.</b><small>Negozio di abbigliamento, 4 dipendenti</small></div></div>
+          <span class="stars sm" data-r="5"></span>
+          <p>Ho cambiato consulente dopo dieci anni e avrei dovuto farlo prima. Mi ha spiegato ogni voce della busta paga.</p>
+          <span class="ok"><i class="ph-fill ph-receipt"></i>Verificata con fattura</span>
+          <div class="rev-to"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&crop=faces&q=70" alt=""><div><b>Michele De Santis</b><small>Lecce</small></div></div>
+        </article>
+        <article class="rev">
+          <div class="rev-top"><span class="ini">CR</span><div><b>Claudia R.</b><small>Famiglia, assunzione badante</small></div></div>
+          <span class="stars sm" data-r="5"></span>
+          <p>Contratto, contributi e cedolini della badante di mia madre gestiti tutti online. Prezzo chiaro fin dall'inizio.</p>
+          <span class="ok"><i class="ph-fill ph-receipt"></i>Verificata con fattura</span>
+          <div class="rev-to"><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=faces&q=70" alt=""><div><b>Francesca Cirillo</b><small>Matera</small></div></div>
+        </article>
+        <article class="rev">
+          <div class="rev-top"><span class="ini g">GT</span><div><b>Giuseppe T.</b><small>Azienda agricola, 20 stagionali</small></div></div>
+          <span class="stars sm" data-r="4"></span>
+          <p>Preciso sugli stagionali e sulle agevolazioni. A volte va sollecitato, ma il lavoro è sempre fatto bene.</p>
+          <span class="ok"><i class="ph-fill ph-receipt"></i>Verificata con lettera d'incarico</span>
+          <div class="rev-to"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=faces&q=70" alt=""><div><b>Antonio Pastore</b><small>Foggia</small></div></div>
+        </article>
+        <article class="rev">
+          <div class="rev-top"><span class="ini g">SM</span><div><b>Sara M.</b><small>Startup, primo dipendente</small></div></div>
+          <span class="stars sm" data-r="5"></span>
+          <p>Prima assunzione della mia vita: mi ha detto quali incentivi potevo usare e quanto mi sarebbe costato davvero.</p>
+          <span class="ok"><i class="ph-fill ph-receipt"></i>Verificata con fattura</span>
+          <div class="rev-to"><img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=80&h=80&fit=crop&crop=faces&q=70" alt=""><div><b>Davide Melchiorre</b><small>Bari</small></div></div>
+        </article>
+        <article class="rev">
+          <div class="rev-top"><span class="ini">LD</span><div><b>Luca D.</b><small>Officina, 7 dipendenti</small></div></div>
+          <span class="stars sm" data-r="4"></span>
+          <p>Bravo sulla conciliazione con un ex dipendente, chiusa in due mesi. Lo studio è un po' lento al telefono.</p>
+          <span class="ok"><i class="ph-fill ph-receipt"></i>Verificata con fattura</span>
+          <div class="rev-to"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=80&h=80&fit=crop&crop=faces&q=70" alt=""><div><b>Michele De Santis</b><small>Lecce</small></div></div>
+        </article>
+        <article class="rev">
+          <div class="rev-top"><span class="ini g">PV</span><div><b>Paola V.</b><small>Studio dentistico, 5 dipendenti</small></div></div>
+          <span class="stars sm" data-r="5"></span>
+          <p>Mi ha proposto un piano welfare che non conoscevo. Utile per noi e apprezzato dai dipendenti.</p>
+          <span class="ok"><i class="ph-fill ph-receipt"></i>Verificata con fattura</span>
+          <div class="rev-to"><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=80&h=80&fit=crop&crop=faces&q=70" alt=""><div><b>Francesca Cirillo</b><small>Matera</small></div></div>
+        </article>
+        <article class="rev">
+          <div class="rev-top"><span class="ini">RC</span><div><b>Roberto C.</b><small>Impresa edile, 30 dipendenti</small></div></div>
+          <span class="stars sm" data-r="5"></span>
+          <p>Conosce il CCNL edilizia meglio di chiunque abbia incontrato. Cassa edile e DURC sempre in regola.</p>
+          <span class="ok"><i class="ph-fill ph-receipt"></i>Verificata con fattura</span>
+          <div class="rev-to"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=faces&q=70" alt=""><div><b>Antonio Pastore</b><small>Foggia</small></div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding-top:8px">
+    <div class="wrap">
+      <div class="numbers">
+        <p class="statement">Quasi 8 aziende private su 10 si affidano a un consulente del lavoro. Quasi sempre lo scelgono col passaparola.</p>
+        <div class="num"><b>26.091</b><span>consulenti del lavoro in Italia</span></div>
+        <div class="num"><b>1,8 mln</b><span>imprese assistite</span></div>
+        <div class="num"><b>797</b><span>società tra professionisti, erano 106 nel 2015</span></div>
+      </div>
+      <p class="source">Fonti: Enpacl fine 2024 via FiscoeTasse, Adnkronos via Ecoseven.</p>
+    </div>
+  </section>
+
+  <section id="province" style="padding-top:0">
+    <div class="wrap">
+      <h2>Cerca nella tua provincia</h2>
+      <div class="prov">
+        <h3>Puglia</h3>
+        <div class="pills">
+          <a href="#" class="pill">Bari<span>184</span></a>
+          <a href="#" class="pill">Lecce<span>121</span></a>
+          <a href="#" class="pill">Foggia<span>96</span></a>
+          <a href="#" class="pill">Taranto<span>88</span></a>
+          <a href="#" class="pill">Brindisi<span>57</span></a>
+          <a href="#" class="pill">Barletta-Andria-Trani<span>49</span></a>
+        </div>
+        <h3>Basilicata</h3>
+        <div class="pills">
+          <a href="#" class="pill">Potenza<span>63</span></a>
+          <a href="#" class="pill">Matera<span>38</span></a>
+          <a href="#" class="pill">Solo da remoto<span>72</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="per-i-consulenti" style="padding-top:0;padding-bottom:0">
+    <div class="wrap">
+      <div class="forpro">
+        <div>
+          <span class="kicker">Sei un consulente del lavoro?</span>
+          <h2>Il tuo profilo potrebbe essere già qui</h2>
+          <p>Rivendicalo con la PEC professionale. Rispondi alle recensioni e ricevi richieste da aziende che cercano proprio i tuoi servizi.</p>
+          <div class="actions">
+            <a href="#" class="btn btn-dark">Rivendica il profilo</a>
+            <a href="#" class="link">Come funziona<i class="ph-bold ph-arrow-right"></i></a>
+          </div>
+        </div>
+        <div class="plans">
+          <div class="plan"><b>Free</b><span class="price">0 €</span><span>Scheda base e fino a 3 richieste al mese</span></div>
+          <div class="plan hi"><b>Pro</b><span class="price">29 € <small>/mese</small></span><span>Richieste illimitate, prezzi e sito sulla scheda, nessun concorrente accanto</span></div>
+          <div class="plan"><b>Premium</b><span class="price">59 € <small>/mese</small></span><span>Priorità nel "Fatti consigliare" e report mensile</span></div>
+          <div class="plan"><b>Studio</b><span class="price">da 99 € <small>/mese</small></span><span>Per studi associati e STP, fino a 5 profili</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a href="#" class="logo"><span class="logo-mark"><i class="ph-bold ph-seal-check"></i></span>TrustCDL</a>
+      <p class="note">Demo con dati di esempio. Nomi e recensioni sono fittizi; i dati di mercato sono reali. Prezzi IVA esclusa, da validare.</p>
+    </div>
+    <div><h4>Per le aziende</h4><ul><li><a href="#">Cerca un consulente</a></li><li><a href="#">Scrivi una recensione</a></li><li><a href="#">Calcolo costo dipendente</a></li></ul></div>
+    <div><h4>Per i consulenti</h4><ul><li><a href="#">Rivendica il profilo</a></li><li><a href="#">Piani e prezzi</a></li><li><a href="#">Widget recensioni</a></li></ul></div>
+    <div><h4>Trasparenza</h4><ul><li><a href="#">Come funzionano le recensioni</a></li><li><a href="#">Come ordiniamo i risultati</a></li><li><a href="#">Privacy</a></li></ul></div>
+  </div>
+</footer>
+
+<nav class="switcher" aria-label="Versioni della demo">
+  <a href="v1-morbida.html">V1<span class="long"> Morbida</span></a>
+  <a href="v1-bianca.html">V1 Bianca</a>
+  <a href="v2-albo.html">V2<span class="long"> Albo</span></a>
+  <a href="v2-bianca.html">V2 Bianca</a>
+  <a href="v2-1.html" class="on">V2.1</a>
+</nav>
+
+<script>
+// Stelle a quadratini: riempimento parziale sull'ultimo quadrato
+document.querySelectorAll('.stars').forEach(el => {
+  const r = parseFloat(el.dataset.r);
+  el.setAttribute('role', 'img');
+  el.setAttribute('aria-label', `${String(r).replace('.', ',')} stelle su 5`);
+  el.innerHTML = Array.from({ length: 5 }, (_, i) => {
+    const p = Math.max(0, Math.min(1, r - i)) * 100;
+    return `<span style="--p:${p}%"><i class="ph-fill ph-star"></i></span>`;
+  }).join('');
+});
+
+// Ombra della barra solo dopo l'inizio dello scroll
+const nav = document.querySelector('.nav');
+const sentinel = document.createElement('div');
+sentinel.style.cssText = 'position:absolute;top:0;height:8px;width:1px';
+document.body.prepend(sentinel);
+new IntersectionObserver(([e]) => nav.classList.toggle('scrolled', !e.isIntersecting)).observe(sentinel);
+
+// Menu mobile
+const menuBtn = document.querySelector('.menu-btn');
+const mmenu = document.getElementById('mmenu');
+const setMenu = open => { mmenu.hidden = !open; menuBtn.setAttribute('aria-expanded', open); menuBtn.innerHTML = open ? '<i class="ph-bold ph-x"></i>' : '<i class="ph-bold ph-list"></i>'; };
+menuBtn.addEventListener('click', () => setMenu(mmenu.hidden));
+mmenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+
+// Risposta rapida del "Fatti consigliare"
+const opts = document.querySelectorAll('.opt');
+opts.forEach(o => o.addEventListener('click', () => opts.forEach(x => x.setAttribute('aria-pressed', x === o))));
+</script>
+</body>
+</html>

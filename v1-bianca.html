@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TrustCDL · Home V1 Bianca</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<style>
+/* Direzione V1 "Bianca": card arrotondate, bianco con accento giallo, il colore dei consulenti del lavoro.
+   Il giallo si usa solo come riempimento con testo scuro sopra; testi e icone sul bianco usano --accent-strong (oro scuro).
+   Regola forme: card 24px, campi 16px, pulsanti e chip a pillola. */
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F5F5F2; --text:#161616; --muted:#5E5E5A;
+  --line:#E8E8E4; --accent:#FFC72C; --accent-ink:#161616; --accent-soft:#FFF6D9; --accent-strong:#7A5600; --accent-hover:#F5B800;
+  --shadow:0 1px 2px rgba(22,22,22,.05), 0 12px 32px -12px rgba(22,22,22,.14);
+  --r-card:24px; --r-field:16px; --r-pill:999px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Plus Jakarta Sans",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.55;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit;color:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 24px}
+section{padding:88px 0}
+h1,h2,h3{letter-spacing:-.025em;line-height:1.1;font-weight:700}
+h2{font-size:clamp(1.8rem,3vw,2.5rem)}
+.lead{color:var(--muted);font-size:1.075rem;max-width:60ch}
+i[class*="ph"]{line-height:1}
+
+/* Pulsanti */
+.btn{display:inline-flex;align-items:center;gap:8px;height:48px;padding:0 22px;border-radius:var(--r-pill);font-weight:600;border:1px solid transparent;cursor:pointer;transition:transform .2s cubic-bezier(.16,1,.3,1),background .2s;white-space:nowrap}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:var(--accent);color:var(--accent-ink)}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-ghost{background:transparent;border-color:var(--line)}
+.btn-ghost:hover{background:var(--surface-2)}
+.btn-white{background:#161616;color:#fff}
+.link{color:var(--text);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:3px;text-underline-offset:5px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.link:hover{text-decoration-color:var(--accent-hover)}
+
+/* Nav */
+.nav{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.nav .wrap{height:68px;display:flex;align-items:center;gap:32px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;letter-spacing:-.02em}
+.logo-mark{width:34px;height:34px;border-radius:11px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:20px}
+.nav-links{display:flex;gap:26px;font-weight:500;color:var(--muted);font-size:.95rem}
+.nav-links a:hover{color:var(--text)}
+.nav-right{margin-left:auto;display:flex;gap:10px;align-items:center}
+.nav-right .btn{height:42px;padding:0 18px}
+
+/* Hero */
+.hero{padding:56px 0 88px}
+.hero .wrap{display:grid;grid-template-columns:1.2fr .9fr;gap:56px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border-radius:var(--r-pill);background:var(--accent-soft);color:var(--accent-strong);font-weight:600;font-size:.88rem;margin-bottom:22px}
+.eyebrow i{font-size:18px}
+.hero h1{font-size:clamp(2.2rem,3.6vw,3.05rem);margin-bottom:18px}
+.hero .lead{margin-bottom:30px}
+.search{background:var(--surface);border-radius:var(--r-card);box-shadow:var(--shadow);padding:10px;display:grid;grid-template-columns:1.2fr 1fr auto;gap:8px;align-items:end;border:1px solid var(--line)}
+.field{display:flex;flex-direction:column;gap:4px;padding:10px 14px;border-radius:var(--r-field);transition:background .2s}
+.field:focus-within{background:var(--surface-2)}
+.field label{font-size:.78rem;font-weight:700;color:var(--text)}
+.field input{border:0;background:transparent;outline:none;font-size:1rem;color:var(--text)}
+.field input::placeholder{color:var(--muted)}
+.search .btn{height:56px;border-radius:var(--r-field);padding:0 26px}
+.hero-alt{margin-top:18px;font-size:.95rem;color:var(--muted)}
+.hero-visual{position:relative;padding-bottom:48px}
+.hero-photo{border-radius:32px;overflow:hidden;aspect-ratio:4/4.3;background:var(--surface-2)}
+.hero-photo img{width:100%;height:100%;object-fit:cover}
+.hero-visual .ccard{position:absolute;left:-40px;bottom:0;width:min(360px,88%)}
+
+/* Card consulente */
+.ccard{background:var(--surface);border-radius:var(--r-card);padding:20px;box-shadow:var(--shadow);border:1px solid var(--line);display:flex;flex-direction:column;gap:14px;transition:transform .3s cubic-bezier(.16,1,.3,1),box-shadow .3s}
+.ccard:hover{transform:translateY(-3px)}
+.ccard-top{display:flex;gap:14px;align-items:center}
+.avatar{width:58px;height:58px;border-radius:50%;object-fit:cover;flex:none;background:var(--surface-2)}
+.ccard h3{font-size:1.06rem;letter-spacing:-.01em}
+.ccard .sub{font-size:.87rem;color:var(--muted)}
+.verified{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;color:var(--accent-strong);background:var(--accent-soft);padding:4px 10px 4px 7px;border-radius:var(--r-pill);width:fit-content}
+.verified i{font-size:15px}
+.meta{display:flex;gap:16px;font-size:.88rem;color:var(--muted);flex-wrap:wrap}
+.meta b{color:var(--text)}
+.meta .ph-fill.ph-star{color:var(--accent-hover)}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:.78rem;padding:5px 11px;border-radius:var(--r-pill);background:var(--surface-2);color:var(--text);font-weight:500}
+.ccard-foot{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--line)}
+.price{font-size:.88rem;color:var(--muted)}
+.price b{color:var(--text);font-size:1rem}
+.ccard-foot .btn{height:40px;padding:0 16px;font-size:.9rem}
+.badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.featured{font-size:.75rem;font-weight:700;color:var(--muted);border:1px solid var(--line);padding:3px 10px;border-radius:var(--r-pill)}
+
+/* Fiducia: bento */
+.bento{display:grid;grid-template-columns:1.25fr 1fr;grid-template-rows:auto auto;gap:18px;margin-top:40px}
+.tile{border-radius:var(--r-card);padding:32px;background:var(--surface);border:1px solid var(--line)}
+.tile h3{font-size:1.35rem;margin:16px 0 10px}
+.tile p{color:var(--muted)}
+.tile-icon{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent-strong);font-size:24px}
+.tile-big{grid-row:span 2;background:var(--accent);color:var(--accent-ink);border:0;display:flex;flex-direction:column}
+.tile-big p{color:rgba(22,22,22,.78)}
+.tile-big .tile-icon{background:rgba(255,255,255,.6);color:var(--accent-ink)}
+.albo{margin-top:auto;background:rgba(255,255,255,.55);border:1px solid rgba(22,22,22,.1);border-radius:20px;padding:18px 20px;display:grid;gap:10px}
+.albo-row{display:flex;justify-content:space-between;font-size:.9rem;gap:12px}
+.albo-row span{color:rgba(22,22,22,.66)}
+.albo-ok{display:flex;align-items:center;gap:8px;font-weight:700}
+.tile-img{padding:0;overflow:hidden;display:grid;grid-template-columns:.75fr 1.25fr}
+.tile-img img{width:100%;height:100%;object-fit:cover;min-height:220px}
+.tile-img .txt{padding:28px}
+
+/* Servizi */
+.services{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:36px}
+.svc{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:22px;display:flex;flex-direction:column;gap:14px;transition:transform .3s cubic-bezier(.16,1,.3,1),border-color .2s}
+.svc:hover{transform:translateY(-3px);border-color:var(--accent)}
+.svc .tile-icon{width:44px;height:44px;font-size:22px;border-radius:14px}
+.svc h3{font-size:1rem;letter-spacing:-.01em}
+.svc span{font-size:.85rem;color:var(--muted)}
+
+/* Consulenti in evidenza */
+.head-row{display:flex;align-items:end;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{height:40px;padding:0 16px;border-radius:var(--r-pill);border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:600;font-size:.9rem;transition:background .2s,color .2s}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.cgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px}
+.cgrid .ccard[hidden]{display:none}
+.empty{grid-column:1/-1;text-align:center;padding:40px;border:1px dashed var(--line);border-radius:var(--r-card);color:var(--muted)}
+
+/* Come funziona */
+.how{background:var(--surface-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-top:48px;position:relative}
+.steps::before{content:"";position:absolute;top:28px;left:8%;right:8%;border-top:2px dashed var(--line);z-index:0}
+.step{position:relative;z-index:1}
+.step .tile-icon{width:56px;height:56px;border-radius:50%;font-size:26px;border:6px solid var(--surface-2);box-sizing:content-box;margin-left:-6px}
+.step h3{font-size:1.25rem;margin:18px 0 8px}
+.step p{color:var(--muted);max-width:34ch}
+
+/* Recensione */
+.review-wrap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.rcard{background:var(--surface);border-radius:28px;padding:28px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.rhead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.rname{font-weight:700}
+.rctx{font-size:.88rem;color:var(--muted)}
+.score{font-size:2.2rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.score small{font-size:.9rem;color:var(--muted);font-weight:600}
+.criteria{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:20px 0}
+.crit{background:var(--surface-2);border-radius:16px;padding:12px 8px;text-align:center}
+.crit b{display:flex;align-items:center;justify-content:center;gap:4px;font-size:1.05rem}
+.crit b i{color:var(--accent-hover);font-size:14px}
+.crit span{font-size:.72rem;color:var(--muted);display:block;margin-top:2px}
+.quote{font-size:1.05rem;line-height:1.6}
+.reply{margin-top:18px;background:var(--surface-2);border-radius:18px;padding:14px 16px;font-size:.92rem;color:var(--muted)}
+.reply b{color:var(--text)}
+.points{display:grid;gap:22px;margin-top:28px}
+.point{display:flex;gap:16px}
+.point .tile-icon{flex:none}
+.point h3{font-size:1.05rem;margin-bottom:4px}
+.point p{color:var(--muted);font-size:.95rem}
+
+/* Matching */
+.match{border-radius:36px;background:var(--accent);color:var(--accent-ink);padding:56px;display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+.match h2{color:var(--accent-ink)}
+.match p{color:rgba(22,22,22,.78);margin:14px 0 28px;max-width:46ch}
+.quiz{background:var(--surface);color:var(--text);border-radius:var(--r-card);padding:24px}
+.quiz .qn{font-size:.8rem;color:var(--muted);font-weight:600}
+.quiz h3{font-size:1.2rem;margin:6px 0 16px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:var(--r-field);border:1px solid var(--line);cursor:pointer;font-weight:600;background:var(--surface);transition:border-color .2s,background .2s}
+.opt:hover{border-color:var(--accent)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opt i{opacity:0;color:var(--accent-strong)}
+.opt[aria-pressed="true"] i{opacity:1}
+.progress{display:flex;gap:4px;margin-top:18px}
+.progress i{height:4px;flex:1;border-radius:4px;background:var(--line)}
+.progress i.on{background:var(--accent)}
+
+/* Città */
+.cities{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:32px}
+.region{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-card);padding:26px}
+.region h3{font-size:1.1rem;margin-bottom:16px}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{display:inline-flex;gap:8px;align-items:center;padding:10px 16px;border-radius:var(--r-pill);background:var(--surface-2);font-weight:600;font-size:.92rem;transition:background .2s,color .2s}
+.pill span{color:var(--muted);font-weight:500}
+.pill:hover{background:var(--accent);color:var(--accent-ink)}
+.pill:hover span{color:inherit;opacity:.8}
+
+/* Consulenti */
+.pro{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.pro-photo{border-radius:32px;overflow:hidden;aspect-ratio:5/4}
+.pro-photo img{width:100%;height:100%;object-fit:cover}
+.pro h2{margin:0 0 14px}
+.pro ul{list-style:none;display:grid;gap:12px;margin:24px 0 32px}
+.pro li{display:flex;gap:10px;align-items:flex-start}
+.pro li i{color:var(--accent-strong);font-size:20px;margin-top:2px}
+.pro .actions{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+
+/* Footer */
+footer{border-top:1px solid var(--line);padding:56px 0 96px;background:var(--surface-2)}
+.foot{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:32px}
+.foot h4{font-size:.9rem;margin-bottom:12px}
+.foot ul{list-style:none;display:grid;gap:8px;font-size:.92rem;color:var(--muted)}
+.foot a:hover{color:var(--text)}
+.foot .note{color:var(--muted);font-size:.88rem;margin-top:14px;max-width:34ch}
+
+/* Selettore versioni (solo demo) */
+.switcher{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:30;display:flex;gap:4px;padding:5px;border-radius:var(--r-pill);background:var(--text);box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.switcher a{white-space:nowrap;padding:8px 14px;border-radius:var(--r-pill);color:var(--bg);font-size:.82rem;font-weight:600;opacity:.7}
+.switcher a.on{background:var(--bg);color:var(--text);opacity:1}
+@media (max-width:480px){.switcher a{padding:8px 9px;font-size:.74rem}.switcher .long{display:none}}
+
+/* Entrate */
+@media (prefers-reduced-motion: no-preference){
+  .js .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+  .js .reveal.in{opacity:1;transform:none}
+}
+
+/* Menu mobile e tablet */
+.menu-btn{display:none;width:42px;height:42px;border-radius:14px;border:1px solid var(--line);background:var(--surface);place-items:center;font-size:20px;cursor:pointer}
+.mmenu{border-top:1px solid var(--line);padding:8px 16px 20px;display:grid;background:var(--bg)}
+.mmenu a:not(.btn){padding:14px 4px;font-weight:600;font-size:1.05rem;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.mmenu .btn{margin-top:16px;justify-content:center}
+.mmenu[hidden]{display:none}
+
+/* Tablet */
+@media (max-width:1024px){
+  .nav .wrap{gap:16px}
+  .nav-links,.nav-right .btn-ghost{display:none}
+  .menu-btn{display:grid}
+  section{padding:72px 0}
+  .hero{padding:40px 0 72px}
+  .hero .wrap{grid-template-columns:1fr;gap:40px}
+  .hero h1{font-size:clamp(2.2rem,5.4vw,3rem)}
+  .hero-visual{display:grid;grid-template-columns:1.1fr 1fr;gap:20px;align-items:center;padding-bottom:0}
+  .hero-photo{aspect-ratio:4/3}
+  .hero-visual .ccard{position:static;width:auto}
+  .services{grid-template-columns:repeat(4,1fr);gap:12px}
+  .svc{padding:18px}
+  .cgrid{grid-template-columns:repeat(2,1fr)}
+  .review-wrap{gap:40px}
+  .criteria{gap:6px}
+  .match{padding:40px;gap:32px}
+  .pro{gap:36px}
+}
+
+/* Tablet verticale */
+@media (max-width:900px){
+  .tile-img{grid-template-columns:1fr}
+  .tile-img img{min-height:0;aspect-ratio:16/9}
+  .review-wrap{grid-template-columns:1fr;gap:32px}
+  .review-wrap > div{order:-1}
+  .points{grid-template-columns:repeat(3,1fr);gap:20px}
+  .point{flex-direction:column;gap:12px}
+  .match{grid-template-columns:1fr}
+  .pro{grid-template-columns:1fr 1.1fr;align-items:start}
+}
+
+/* Telefono */
+@media (max-width:640px){
+  .points{grid-template-columns:1fr}
+  .point{flex-direction:row;gap:16px}
+  section{padding:52px 0}
+  .wrap{padding:0 16px}
+  h2{font-size:1.6rem}
+  .lead{font-size:1rem}
+
+  .hero{padding:24px 0 44px}
+  .hero .wrap{gap:28px}
+  .hero h1{font-size:2.1rem;margin-bottom:14px}
+  .eyebrow{margin-bottom:16px;font-size:.82rem}
+  .hero .lead{margin-bottom:22px}
+  .search{grid-template-columns:1fr;gap:0;padding:6px}
+  .field{padding:10px 12px}
+  .field + .field{border-top:1px solid var(--line);border-radius:0}
+  .search .btn{width:100%;justify-content:center;height:52px;margin-top:6px}
+  .hero-visual{display:block}
+  .hero-photo{aspect-ratio:16/10;border-radius:24px}
+  .hero-visual .ccard{margin:-56px 12px 0;position:relative}
+
+  .bento{grid-template-columns:1fr;gap:12px;margin-top:24px}
+  .tile{padding:22px}
+  .tile h3{font-size:1.15rem;margin:14px 0 8px}
+  .tile-big{grid-row:auto}
+  .albo-row{font-size:.84rem}
+  .tile-img{grid-template-columns:1fr}
+  .tile-img img{min-height:0;aspect-ratio:16/9}
+  .tile-img .txt{padding:22px}
+
+  .services{grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+  .svc{padding:14px;gap:10px;border-radius:18px}
+  .svc .tile-icon{width:38px;height:38px;font-size:19px;border-radius:12px}
+  .svc h3{font-size:.93rem;line-height:1.25}
+  .svc span{font-size:.78rem}
+
+  .head-row{gap:16px}
+  .chips{flex-wrap:nowrap;overflow-x:auto;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none;width:calc(100% + 32px)}
+  .chips::-webkit-scrollbar{display:none}
+  .chip{flex:none}
+  .cgrid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:20px -16px 0;padding:4px 16px 12px;scrollbar-width:none}
+  .cgrid::-webkit-scrollbar{display:none}
+  .cgrid .ccard{flex:0 0 82%;scroll-snap-align:center}
+  .cgrid .ccard:hover{transform:none}
+  .empty{flex:0 0 100%}
+
+  .steps{grid-template-columns:1fr;gap:18px;margin-top:28px}
+  .steps::before{display:none}
+  .step{display:grid;grid-template-columns:48px 1fr;column-gap:14px}
+  .step .tile-icon{width:48px;height:48px;font-size:22px;border:0;margin:0;grid-row:span 2}
+  .step h3{margin:2px 0 2px;font-size:1.08rem}
+  .step p{font-size:.95rem}
+
+  .review-wrap{grid-template-columns:1fr;gap:28px}
+  .review-wrap > div{order:-1}
+  .points{gap:16px;margin-top:20px}
+  .rcard{padding:20px;border-radius:24px}
+  .score{font-size:1.8rem}
+  .criteria{grid-template-columns:repeat(5,1fr);gap:4px;margin:16px 0}
+  .crit{padding:10px 2px;border-radius:12px}
+  .crit b{font-size:.95rem}
+  .crit span{font-size:.62rem;line-height:1.2}
+  .quote{font-size:1rem}
+
+  .match{grid-template-columns:1fr;padding:28px 20px;gap:24px;border-radius:28px}
+  .match .btn{width:100%;justify-content:center}
+  .quiz{padding:18px}
+  .opt{padding:12px 14px;font-size:.95rem}
+
+  .cities{grid-template-columns:1fr;gap:12px;margin-top:24px}
+  .region{padding:20px}
+  .pill{padding:9px 14px;font-size:.88rem}
+
+  .pro{grid-template-columns:1fr;gap:28px}
+  .pro-photo{aspect-ratio:16/10;border-radius:24px}
+  .pro .actions .btn{width:100%;justify-content:center}
+
+  footer{padding:40px 0 110px}
+  .foot{grid-template-columns:1fr 1fr;gap:28px 16px}
+  .foot > div:first-child{grid-column:1/-1}
+  .switcher{bottom:12px}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="#" class="logo"><span class="logo-mark"><i class="ph-bold ph-seal-check"></i></span>TrustCDL</a>
+    <nav class="nav-links">
+      <a href="#servizi">Servizi</a>
+      <a href="#come-funziona">Come funziona</a>
+      <a href="#recensioni">Recensioni verificate</a>
+      <a href="#citta">Città</a>
+    </nav>
+    <div class="nav-right">
+      <a href="#consulenti" class="btn btn-ghost">Per i consulenti</a>
+      <a href="#" class="btn btn-primary">Accedi</a>
+      <button class="menu-btn" aria-label="Apri il menu" aria-expanded="false" aria-controls="mmenu"><i class="ph-bold ph-list"></i></button>
+    </div>
+  </div>
+  <nav class="mmenu" id="mmenu" hidden>
+    <a href="#servizi">Servizi<i class="ph ph-caret-right"></i></a>
+    <a href="#come-funziona">Come funziona<i class="ph ph-caret-right"></i></a>
+    <a href="#recensioni">Recensioni verificate<i class="ph ph-caret-right"></i></a>
+    <a href="#citta">Città<i class="ph ph-caret-right"></i></a>
+    <a href="#consulenti" class="btn btn-ghost">Per i consulenti</a>
+  </nav>
+</header>
+
+<main>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="eyebrow"><i class="ph-fill ph-seal-check"></i>Ogni profilo controllato sull'Albo</span>
+        <h1>Il consulente del lavoro giusto, verificato.</h1>
+        <p class="lead">Recensioni solo da clienti reali. Confronta servizi, prezzi e specializzazioni dei consulenti vicino a te.</p>
+        <form class="search" onsubmit="event.preventDefault()">
+          <div class="field">
+            <label for="q1">Cosa ti serve</label>
+            <input id="q1" placeholder="Buste paga, CCNL Turismo..." list="servizi-list">
+          </div>
+          <div class="field">
+            <label for="q2">Dove</label>
+            <input id="q2" placeholder="Bari, CAP o da remoto">
+          </div>
+          <button class="btn btn-primary"><i class="ph-bold ph-magnifying-glass"></i>Cerca</button>
+        </form>
+        <p class="hero-alt">Non sai da dove partire? <a href="#match" class="link">Fatti consigliare<i class="ph-bold ph-arrow-right"></i></a></p>
+      </div>
+      <div class="hero-visual reveal">
+        <div class="hero-photo">
+          <img src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=1100&h=1180&fit=crop&q=75" alt="Una consulente del lavoro con una cliente davanti al portatile">
+        </div>
+        <article class="ccard">
+          <div class="ccard-top">
+            <img class="avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&h=160&fit=crop&crop=faces&q=70" alt="Giulia Lorusso">
+            <div>
+              <h3>Giulia Lorusso</h3>
+              <div class="sub">Studio Lorusso, Bari</div>
+            </div>
+          </div>
+          <span class="verified"><i class="ph-fill ph-seal-check"></i>Albo verificato, Ordine di Bari</span>
+          <div class="meta"><span><i class="ph-fill ph-star"></i> <b>4,9</b> (38 recensioni)</span><span><i class="ph ph-clock"></i> Risponde in 3 ore</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Perché fidarsi -->
+  <section>
+    <div class="wrap">
+      <h2 class="reveal">Perché fidarsi di TrustCDL</h2>
+      <div class="bento">
+        <div class="tile tile-big reveal">
+          <div class="tile-icon"><i class="ph-bold ph-identification-badge"></i></div>
+          <h3>Ogni consulente è controllato sull'Albo</h3>
+          <p>Verifichiamo nome, codice fiscale e numero di iscrizione con l'Ordine provinciale. Lo stato viene ricontrollato ogni tre mesi.</p>
+          <div class="albo" style="margin-top:32px">
+            <div class="albo-row"><span>Ordine</span>Consulenti del Lavoro di Bari</div>
+            <div class="albo-row"><span>Iscrizione</span>n. 1482, dal 2009</div>
+            <div class="albo-row"><span>Conferma</span>PEC professionale</div>
+            <div class="albo-ok"><i class="ph-fill ph-check-circle"></i>Iscrizione attiva</div>
+          </div>
+        </div>
+        <div class="tile reveal">
+          <div class="tile-icon"><i class="ph-bold ph-receipt"></i></div>
+          <h3>Recensioni solo da clienti reali</h3>
+          <p>Chi recensisce allega una fattura o la lettera d'incarico. Il documento lo vede solo il moderatore e viene cancellato dopo la verifica.</p>
+        </div>
+        <div class="tile tile-img reveal">
+          <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=700&h=600&fit=crop&q=70" alt="Stretta di mano tra consulente e cliente">
+          <div class="txt">
+            <div class="tile-icon"><i class="ph-bold ph-scales"></i></div>
+            <h3>Nessuna recensione si compra</h3>
+            <p>Il consulente può rispondere a tutte, ma non può nasconderne nessuna.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Servizi -->
+  <section id="servizi" style="padding-top:0">
+    <div class="wrap">
+      <h2 class="reveal">Di cosa ha bisogno la tua azienda?</h2>
+      <div class="services">
+        <a href="#" class="svc reveal"><div class="tile-icon"><i class="ph-bold ph-money"></i></div><h3>Buste paga</h3><span>212 consulenti</span></a>
+        <a href="#" class="svc reveal"><div class="tile-icon"><i class="ph-bold ph-user-plus"></i></div><h3>Assunzioni e contratti</h3><span>198 consulenti</span></a>
+        <a href="#" class="svc reveal"><div class="tile-icon"><i class="ph-bold ph-file-text"></i></div><h3>CCNL e inquadramenti</h3><span>164 consulenti</span></a>
+        <a href="#" class="svc reveal"><div class="tile-icon"><i class="ph-bold ph-gavel"></i></div><h3>Contenzioso e conciliazioni</h3><span>87 consulenti</span></a>
+        <a href="#" class="svc reveal"><div class="tile-icon"><i class="ph-bold ph-gift"></i></div><h3>Welfare aziendale</h3><span>59 consulenti</span></a>
+        <a href="#" class="svc reveal"><div class="tile-icon"><i class="ph-bold ph-coins"></i></div><h3>Incentivi all'assunzione</h3><span>141 consulenti</span></a>
+        <a href="#" class="svc reveal"><div class="tile-icon"><i class="ph-bold ph-house-line"></i></div><h3>Colf e badanti</h3><span>126 consulenti</span></a>
+        <a href="#" class="svc reveal"><div class="tile-icon"><i class="ph-bold ph-lifebuoy"></i></div><h3>Crisi d'impresa</h3><span>34 consulenti</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Consulenti in evidenza -->
+  <section style="padding-top:0">
+    <div class="wrap">
+      <div class="head-row reveal">
+        <h2>I più apprezzati in Puglia e Basilicata</h2>
+        <div class="chips" role="group" aria-label="Filtra per città">
+          <button class="chip" aria-pressed="true" data-city="all">Tutte</button>
+          <button class="chip" aria-pressed="false" data-city="bari">Bari</button>
+          <button class="chip" aria-pressed="false" data-city="lecce">Lecce</button>
+          <button class="chip" aria-pressed="false" data-city="foggia">Foggia</button>
+          <button class="chip" aria-pressed="false" data-city="taranto">Taranto</button>
+          <button class="chip" aria-pressed="false" data-city="matera">Matera</button>
+        </div>
+      </div>
+      <div class="cgrid">
+        <article class="ccard reveal" data-city="bari">
+          <div class="ccard-top">
+            <img class="avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&h=160&fit=crop&crop=faces&q=70" alt="Giulia Lorusso">
+            <div><h3>Giulia Lorusso</h3><div class="sub">Studio Lorusso, Bari</div></div>
+          </div>
+          <div class="badges"><span class="verified"><i class="ph-fill ph-seal-check"></i>Albo verificato</span><span class="featured">In evidenza</span></div>
+          <div class="meta"><span><i class="ph-fill ph-star"></i> <b>4,9</b> (38)</span><span><i class="ph ph-clock"></i> 3 ore</span></div>
+          <div class="tags"><span class="tag">CCNL Turismo</span><span class="tag">Commercio</span><span class="tag">Welfare</span></div>
+          <div class="ccard-foot"><span class="price">da <b>22 €</b> a cedolino</span><a href="#" class="btn btn-ghost">Profilo</a></div>
+        </article>
+        <article class="ccard reveal" data-city="lecce">
+          <div class="ccard-top">
+            <img class="avatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=160&h=160&fit=crop&crop=faces&q=70" alt="Michele De Santis">
+            <div><h3>Michele De Santis</h3><div class="sub">Studio De Santis, Lecce</div></div>
+          </div>
+          <span class="verified"><i class="ph-fill ph-seal-check"></i>Albo verificato</span>
+          <div class="meta"><span><i class="ph-fill ph-star"></i> <b>4,8</b> (24)</span><span><i class="ph ph-clock"></i> 5 ore</span></div>
+          <div class="tags"><span class="tag">Edilizia</span><span class="tag">Metalmeccanico</span></div>
+          <div class="ccard-foot"><span class="price">da <b>19 €</b> a cedolino</span><a href="#" class="btn btn-ghost">Profilo</a></div>
+        </article>
+        <article class="ccard reveal" data-city="matera">
+          <div class="ccard-top">
+            <img class="avatar" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=160&h=160&fit=crop&crop=faces&q=70" alt="Francesca Cirillo">
+            <div><h3>Francesca Cirillo</h3><div class="sub">Libera professionista, Matera</div></div>
+          </div>
+          <span class="verified"><i class="ph-fill ph-seal-check"></i>Albo verificato</span>
+          <div class="meta"><span><i class="ph-fill ph-star"></i> <b>4,9</b> (17)</span><span><i class="ph ph-clock"></i> 2 ore</span></div>
+          <div class="tags"><span class="tag">Colf e badanti</span><span class="tag">Da remoto</span></div>
+          <div class="ccard-foot"><span class="price">da <b>15 €</b> a cedolino</span><a href="#" class="btn btn-ghost">Profilo</a></div>
+        </article>
+        <article class="ccard reveal" data-city="foggia">
+          <div class="ccard-top">
+            <img class="avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=160&h=160&fit=crop&crop=faces&q=70" alt="Antonio Pastore">
+            <div><h3>Antonio Pastore</h3><div class="sub">Pastore &amp; Associati STP, Foggia</div></div>
+          </div>
+          <span class="verified"><i class="ph-fill ph-seal-check"></i>Albo verificato</span>
+          <div class="meta"><span><i class="ph-fill ph-star"></i> <b>4,7</b> (31)</span><span><i class="ph ph-clock"></i> 1 giorno</span></div>
+          <div class="tags"><span class="tag">Agricoltura</span><span class="tag">Contenzioso</span></div>
+          <div class="ccard-foot"><span class="price">Prezzo su richiesta</span><a href="#" class="btn btn-ghost">Profilo</a></div>
+        </article>
+        <p class="empty" hidden>Nessun consulente in evidenza qui per ora. <a href="#" class="link">Cerca in tutta la provincia</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Come funziona -->
+  <section class="how" id="come-funziona">
+    <div class="wrap">
+      <span class="eyebrow reveal"><i class="ph-fill ph-path"></i>Come funziona</span>
+      <h2 class="reveal">Dalla ricerca al primo incontro, gratis</h2>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="tile-icon"><i class="ph-bold ph-magnifying-glass"></i></div>
+          <h3>Cerca</h3>
+          <p>Filtra per servizio, CCNL, settore e numero di dipendenti. Anche solo consulenti da remoto.</p>
+        </div>
+        <div class="step reveal">
+          <div class="tile-icon"><i class="ph-bold ph-columns"></i></div>
+          <h3>Confronta</h3>
+          <p>Metti fino a tre profili affiancati: prezzi, specializzazioni e voti per criterio.</p>
+        </div>
+        <div class="step reveal">
+          <div class="tile-icon"><i class="ph-bold ph-chat-circle-text"></i></div>
+          <h3>Contatta</h3>
+          <p>Chiedi un preventivo o prenota una call di presentazione. Rispondono di solito in giornata.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recensione verificata -->
+  <section id="recensioni">
+    <div class="wrap review-wrap">
+      <article class="rcard reveal">
+        <div class="rhead">
+          <div>
+            <div class="rname">Mario R.</div>
+            <div class="rctx">Ristorante, 8 dipendenti. Cliente da 3 anni.</div>
+            <span class="verified" style="margin-top:10px"><i class="ph-fill ph-receipt"></i>Rapporto verificato con fattura</span>
+          </div>
+          <div class="score">4,8<small>/5</small></div>
+        </div>
+        <div class="criteria">
+          <div class="crit"><b>5 <i class="ph-fill ph-star"></i></b><span>Competenza</span></div>
+          <div class="crit"><b>5 <i class="ph-fill ph-star"></i></b><span>Puntualità</span></div>
+          <div class="crit"><b>4 <i class="ph-fill ph-star"></i></b><span>Chiarezza</span></div>
+          <div class="crit"><b>5 <i class="ph-fill ph-star"></i></b><span>Reperibilità</span></div>
+          <div class="crit"><b>5 <i class="ph-fill ph-star"></i></b><span>Qualità/prezzo</span></div>
+        </div>
+        <p class="quote">"Ci ha seguiti nel passaggio al CCNL Turismo senza un errore sui cedolini. Risponde sempre in giornata, anche ad agosto."</p>
+        <div class="reply"><b>Risposta di Giulia Lorusso:</b> grazie Mario, è un piacere lavorare con una squadra così organizzata.</div>
+      </article>
+      <div>
+        <h2 class="reveal">Come nasce una recensione verificata</h2>
+        <div class="points">
+          <div class="point reveal"><div class="tile-icon"><i class="ph-bold ph-paperclip"></i></div><div><h3>Prova del rapporto</h3><p>Il cliente allega fattura o lettera d'incarico. Resta privata.</p></div></div>
+          <div class="point reveal"><div class="tile-icon"><i class="ph-bold ph-list-checks"></i></div><div><h3>Voto per criterio</h3><p>Competenza, puntualità, chiarezza, reperibilità e rapporto qualità/prezzo.</p></div></div>
+          <div class="point reveal"><div class="tile-icon"><i class="ph-bold ph-chats"></i></div><div><h3>Diritto di replica</h3><p>Il consulente risponde pubblicamente, gratis, in tutti i piani.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Matching -->
+  <section id="match" style="padding-top:0">
+    <div class="wrap">
+      <div class="match reveal">
+        <div>
+          <h2>Non sai chi scegliere? Rispondi a 7 domande.</h2>
+          <p>Settore, dipendenti, CCNL, urgenza. Ti proponiamo 3 consulenti compatibili e la richiesta arriva solo a loro.</p>
+          <a href="#" class="btn btn-white">Fatti consigliare<i class="ph-bold ph-arrow-right"></i></a>
+        </div>
+        <div class="quiz">
+          <div class="qn">Domanda 2 di 7</div>
+          <h3>Quanti dipendenti ha la tua azienda?</h3>
+          <div class="opts">
+            <button class="opt" aria-pressed="false">Nessuno, sto per assumere il primo<i class="ph-bold ph-check"></i></button>
+            <button class="opt" aria-pressed="true">Da 1 a 15<i class="ph-bold ph-check"></i></button>
+            <button class="opt" aria-pressed="false">Da 16 a 50<i class="ph-bold ph-check"></i></button>
+            <button class="opt" aria-pressed="false">Più di 50<i class="ph-bold ph-check"></i></button>
+          </div>
+          <div class="progress"><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Città -->
+  <section id="citta" style="padding-top:0">
+    <div class="wrap">
+      <h2 class="reveal">Cerca nella tua provincia</h2>
+      <div class="cities">
+        <div class="region reveal">
+          <h3>Puglia</h3>
+          <div class="pills">
+            <a href="#" class="pill">Bari <span>184</span></a>
+            <a href="#" class="pill">Lecce <span>121</span></a>
+            <a href="#" class="pill">Foggia <span>96</span></a>
+            <a href="#" class="pill">Taranto <span>88</span></a>
+            <a href="#" class="pill">Brindisi <span>57</span></a>
+            <a href="#" class="pill">Barletta-Andria-Trani <span>49</span></a>
+          </div>
+        </div>
+        <div class="region reveal">
+          <h3>Basilicata</h3>
+          <div class="pills">
+            <a href="#" class="pill">Potenza <span>63</span></a>
+            <a href="#" class="pill">Matera <span>38</span></a>
+            <a href="#" class="pill">Solo da remoto <span>72</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Per i consulenti -->
+  <section id="consulenti" style="padding-top:0">
+    <div class="wrap pro">
+      <div class="pro-photo reveal"><img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&h=800&fit=crop&q=70" alt="Consulente del lavoro nel suo studio"></div>
+      <div class="reveal">
+        <span class="eyebrow"><i class="ph-fill ph-briefcase"></i>Per i consulenti del lavoro</span>
+        <h2>Il tuo profilo potrebbe essere già qui. Rivendicalo.</h2>
+        <p class="lead">Clienti che ti cercano per servizio e CCNL, senza fare marketing.</p>
+        <ul>
+          <li><i class="ph-fill ph-check-circle"></i>Verifica con PEC professionale in pochi minuti</li>
+          <li><i class="ph-fill ph-check-circle"></i>Rispondi a recensioni e richieste di preventivo</li>
+          <li><i class="ph-fill ph-check-circle"></i>Piano Free per sempre, Pro da 29 € al mese</li>
+        </ul>
+        <div class="actions">
+          <a href="#" class="btn btn-primary">Rivendica il profilo</a>
+          <a href="#" class="link">Vedi i piani<i class="ph-bold ph-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a href="#" class="logo"><span class="logo-mark"><i class="ph-bold ph-seal-check"></i></span>TrustCDL</a>
+      <p class="note">Demo con dati di esempio. Nomi, numeri e recensioni sono fittizi.</p>
+    </div>
+    <div><h4>Per le aziende</h4><ul><li><a href="#">Cerca un consulente</a></li><li><a href="#">Calcolo costo dipendente</a></li><li><a href="#">Quanto costa un consulente</a></li></ul></div>
+    <div><h4>Per i consulenti</h4><ul><li><a href="#">Rivendica il profilo</a></li><li><a href="#">Piani e prezzi</a></li><li><a href="#">Widget recensioni</a></li></ul></div>
+    <div><h4>Trasparenza</h4><ul><li><a href="#">Come funzionano le recensioni</a></li><li><a href="#">Come ordiniamo i risultati</a></li><li><a href="#">Privacy</a></li></ul></div>
+  </div>
+</footer>
+
+<nav class="switcher" aria-label="Versioni della demo">
+  <a href="v1-morbida.html">V1<span class="long"> Morbida</span></a>
+  <a href="v1-bianca.html" class="on">V1 Bianca</a>
+  <a href="v2-albo.html">V2<span class="long"> Albo</span></a>
+  <a href="v2-bianca.html">V2 Bianca</a>
+  <a href="v2-1.html">V2.1</a>
+</nav>
+
+<datalist id="servizi-list">
+  <option value="Buste paga"><option value="CCNL Turismo"><option value="CCNL Commercio"><option value="Assunzioni"><option value="Colf e badanti"><option value="Welfare aziendale">
+</datalist>
+
+<script>
+document.documentElement.classList.add('js');
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .12 });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Filtro città
+const chips = document.querySelectorAll('.chip');
+const cards = document.querySelectorAll('.cgrid .ccard');
+const empty = document.querySelector('.cgrid .empty');
+chips.forEach(c => c.addEventListener('click', () => {
+  chips.forEach(x => x.setAttribute('aria-pressed', x === c));
+  let shown = 0;
+  cards.forEach(card => {
+    const ok = c.dataset.city === 'all' || card.dataset.city === c.dataset.city;
+    card.hidden = !ok; if (ok) shown++;
+  });
+  empty.hidden = shown > 0;
+}));
+
+// Menu mobile
+const menuBtn = document.querySelector('.menu-btn');
+const mmenu = document.getElementById('mmenu');
+const setMenu = open => { mmenu.hidden = !open; menuBtn.setAttribute('aria-expanded', open); menuBtn.innerHTML = open ? '<i class="ph-bold ph-x"></i>' : '<i class="ph-bold ph-list"></i>'; };
+menuBtn.addEventListener('click', () => setMenu(mmenu.hidden));
+mmenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+
+// Quiz
+const opts = document.querySelectorAll('.opt');
+opts.forEach(o => o.addEventListener('click', () => opts.forEach(x => x.setAttribute('aria-pressed', x === o))));
+</script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consulenti del lavoro per buste paga a Bari · TrustCDL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<link rel="stylesheet" href="assets/trustcdl.css">
+<style>
+.page-head{padding:8px 0 28px}
+.page-head h1{font-size:clamp(1.8rem,3.4vw,2.6rem);max-width:22ch}
+.page-head p{color:var(--muted);margin-top:10px}
+.page-head p b{color:var(--text)}
+.search{display:flex;align-items:center;max-width:720px;margin-top:24px;background:#fff;border-radius:999px;box-shadow:var(--lift);padding:6px 6px 6px 8px}
+.search .f{flex:1;display:flex;align-items:center;gap:10px;padding:0 16px;height:48px;min-width:0;border-radius:999px}
+.search .f:focus-within{background:var(--soft)}
+.search .f i{color:var(--muted);font-size:18px}
+.search .f input{flex:1;min-width:0;outline:none}
+.search .f + .f{position:relative}
+.search .f + .f::before{content:"";position:absolute;left:0;top:13px;bottom:13px;width:1px;background:var(--soft-2)}
+.search .btn{height:48px}
+
+.layout{display:grid;grid-template-columns:268px 1fr;gap:40px;align-items:start}
+.filters{position:sticky;top:88px;max-height:calc(100dvh - 104px);overflow:auto;padding-right:6px;scrollbar-width:thin}
+.fgroup{padding:14px 0 18px}
+.fgroup h3{font-size:.98rem;margin-bottom:6px;letter-spacing:-.01em}
+.filters select{width:100%;background:var(--soft);border-radius:12px;padding:11px 12px;font-size:.95rem;cursor:pointer}
+.sheet-head,.sheet-foot,.scrim{display:none}
+
+.toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.toolbar .count{font-weight:600}
+.toolbar .sort{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.92rem;color:var(--muted)}
+.toolbar select{background:var(--soft);border-radius:999px;padding:9px 14px;font-weight:600;color:var(--text);cursor:pointer}
+.open-filters{display:none}
+.active{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.active:empty{display:none}
+.active button{display:inline-flex;align-items:center;gap:6px;background:var(--text);color:#fff;padding:7px 12px;border-radius:999px;font-size:.85rem;font-weight:600;cursor:pointer}
+
+.results{display:grid;gap:12px;container:results / inline-size}
+.card{display:grid;grid-template-columns:96px 1fr auto;gap:22px;align-items:start;background:var(--soft);border-radius:24px;padding:22px;transition:background .2s}
+.card:hover{background:var(--soft-2)}
+.card.sp{background:var(--yellow-pale)}
+.card.sp:hover{background:#FFEDB3}
+.card img{width:96px;height:96px;border-radius:20px;object-fit:cover}
+.card .top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.card h2{font-size:1.2rem;letter-spacing:-.015em}
+.card h2 a:hover{text-decoration:underline}
+.card .studio{color:var(--muted);font-size:.93rem;margin-top:2px}
+.card .rating{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:.92rem;color:var(--muted)}
+.card .rating b{color:var(--text)}
+.card > *{min-width:0}
+.card .tags{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-top:12px}
+.card .tags::-webkit-scrollbar{display:none}
+.card .tags .tag{background:#fff}
+.card .side{display:grid;gap:8px;justify-items:end;text-align:right;min-width:190px}
+.card .price{font-size:.92rem;color:var(--muted)}
+.card .price b{font-size:1.25rem;color:var(--text);letter-spacing:-.02em}
+.card .fact{display:flex;align-items:center;gap:6px;font-size:.88rem;color:var(--muted)}
+.card .fact i{color:var(--gold);font-size:16px}
+.card .ctas{display:flex;gap:8px;margin-top:6px}
+.empty{background:var(--soft);border-radius:24px;padding:48px 24px;text-align:center}
+.empty i{font-size:34px;color:var(--gold)}
+.empty h2{margin:12px 0 6px}
+.empty p{color:var(--muted);margin-bottom:18px}
+.pages{display:flex;gap:6px;justify-content:center;margin-top:28px;flex-wrap:wrap}
+.pages a{min-width:42px;height:42px;padding:0 14px;border-radius:999px;display:grid;place-items:center;font-weight:600;background:var(--soft)}
+.pages a.on{background:var(--text);color:#fff}
+.pages a:hover:not(.on){background:var(--soft-2)}
+.order-note{font-size:.85rem;color:var(--muted);margin-top:14px;text-align:center}
+
+.guide{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;margin-top:80px;align-items:start}
+.guide h2{margin-bottom:12px}
+.guide p{color:var(--muted)}
+.prices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+.prices div{background:var(--soft);border-radius:20px;padding:18px}
+.prices b{display:block;font-size:1.6rem;letter-spacing:-.03em}
+.prices span{font-size:.88rem;color:var(--muted)}
+.faq details{background:var(--soft);border-radius:18px;padding:0 20px;margin-bottom:10px}
+.faq summary{cursor:pointer;list-style:none;padding:18px 0;font-weight:600;display:flex;justify-content:space-between;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary i{transition:transform .2s;flex:none}
+.faq details[open] summary i{transform:rotate(45deg)}
+.faq details p{padding:0 0 18px;color:var(--muted);font-size:.95rem}
+.more{margin-top:56px}
+.more .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+
+@media (max-width:1024px){
+  .layout{grid-template-columns:1fr}
+  .open-filters{display:inline-flex}
+  .filters{position:fixed;inset:auto 0 0 0;top:auto;max-height:86dvh;background:#fff;z-index:50;border-radius:28px 28px 0 0;padding:0 20px;box-shadow:0 -20px 60px rgba(20,20,20,.25);transform:translateY(105%);transition:transform .3s cubic-bezier(.16,1,.3,1)}
+  .filters.open{transform:none}
+  .sheet-head{display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;padding:18px 0 10px;z-index:1}
+  .sheet-head h2{font-size:1.2rem}
+  .sheet-foot{display:block;position:sticky;bottom:0;background:#fff;padding:12px 0 18px}
+  .scrim{display:block;position:fixed;inset:0;background:rgba(20,20,20,.35);z-index:45;opacity:0;pointer-events:none;transition:opacity .3s}
+  .scrim.open{opacity:1;pointer-events:auto}
+  .guide{grid-template-columns:1fr;gap:36px}
+}
+/* Quando la colonna dei risultati è stretta, prezzo e pulsanti scendono sotto e il testo prende tutta la larghezza */
+@container results (max-width:760px){
+  .card{grid-template-columns:80px 1fr;gap:16px 18px}
+  .card img{width:80px;height:80px;border-radius:18px}
+  .card .side{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;text-align:left;gap:8px 18px;min-width:0}
+  .card .ctas{margin:0 0 0 auto}
+}
+@media (max-width:640px){
+  .page-head h1{font-size:1.7rem}
+  .search{flex-direction:column;align-items:stretch;border-radius:24px;padding:8px}
+  .search .f{height:46px}
+  .search .f + .f::before{left:14px;right:14px;top:0;bottom:auto;width:auto;height:1px}
+  .search .btn{margin-top:6px}
+  .toolbar .sort span{display:none}
+  .card{grid-template-columns:64px 1fr;gap:14px;padding:16px;border-radius:20px}
+  .card img{width:64px;height:64px;border-radius:16px}
+  .card h2{font-size:1.06rem}
+  .card .tags .tag{font-size:.78rem;padding:5px 10px}
+  .card .tags .tag:nth-child(n+3){display:none}
+  .card .side{gap:6px 14px}
+  .card .side .price{width:100%}
+  .card .ctas{width:100%;margin:6px 0 0;display:grid;grid-template-columns:1.4fr 1fr}
+  .prices{grid-template-columns:1fr 1fr}
+  .prices div:last-child{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="v2-1.html" class="logo"><span class="logo-mark"><i class="ph-bold ph-seal-check"></i></span>TrustCDL</a>
+    <label class="nav-search"><i class="ph ph-magnifying-glass"></i><span class="sr">Cerca</span><input placeholder="Cerca un consulente o un servizio"></label>
+    <nav class="nav-links">
+      <a href="consulenti.html" class="on">Consulenti</a>
+      <a href="v2-1.html#servizi">Servizi</a>
+      <a href="v2-1.html#recensioni">Recensioni</a>
+    </nav>
+    <div class="nav-right">
+      <a href="area-consulente.html" class="plain">Accedi</a>
+      <a href="v2-1.html#per-i-consulenti" class="btn btn-dark">Per i consulenti</a>
+      <button class="menu-btn" aria-label="Apri il menu" aria-expanded="false" aria-controls="mmenu"><i class="ph-bold ph-list"></i></button>
+    </div>
+  </div>
+  <nav class="mmenu" id="mmenu" hidden>
+    <a href="consulenti.html">Consulenti<i class="ph ph-caret-right"></i></a>
+    <a href="v2-1.html#servizi">Servizi<i class="ph ph-caret-right"></i></a>
+    <a href="v2-1.html#recensioni">Recensioni<i class="ph ph-caret-right"></i></a>
+    <a href="area-consulente.html">Accedi<i class="ph ph-caret-right"></i></a>
+    <a href="v2-1.html#per-i-consulenti" class="btn btn-dark">Per i consulenti</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <nav class="crumbs" aria-label="Percorso">
+    <a href="v2-1.html">Home</a><i class="ph ph-caret-right"></i>
+    <a href="#">Puglia</a><i class="ph ph-caret-right"></i>
+    <a href="#">Bari</a><i class="ph ph-caret-right"></i>
+    <span>Buste paga</span>
+  </nav>
+
+  <div class="page-head">
+    <h1>Consulenti del lavoro per buste paga a Bari</h1>
+    <p><b>46 consulenti</b> verificati sull'Albo, con una media di <b>4,7</b> su 1.284 recensioni verificate.</p>
+    <form class="search" role="search" onsubmit="event.preventDefault()">
+      <label class="f"><span class="sr">Cosa ti serve</span><i class="ph ph-magnifying-glass"></i><input value="Buste paga"></label>
+      <label class="f"><span class="sr">Dove</span><i class="ph ph-map-pin"></i><input value="Bari"></label>
+      <button class="btn btn-yellow">Cerca</button>
+    </form>
+  </div>
+
+  <div class="layout">
+    <aside class="filters" id="filters" aria-label="Filtri">
+      <div class="sheet-head"><h2>Filtri</h2><button class="btn btn-soft btn-sm close-filters" aria-label="Chiudi i filtri"><i class="ph-bold ph-x"></i></button></div>
+
+      <div class="fgroup">
+        <h3>Valutazione</h3>
+        <label class="check"><input type="checkbox" data-f="r45"><span class="stars sm" data-r="4.5"></span>4,5 e più</label>
+        <label class="check"><input type="checkbox" data-f="r48"><span class="stars sm" data-r="4.8"></span>4,8 e più</label>
+      </div>
+      <div class="fgroup">
+        <h3>Disponibilità</h3>
+        <label class="check"><input type="checkbox" data-f="fast">Risponde entro 24 ore</label>
+        <label class="check"><input type="checkbox" data-f="call">Call di presentazione gratuita</label>
+        <label class="check"><input type="checkbox" data-f="remote">Lavora anche da remoto</label>
+      </div>
+      <div class="fgroup">
+        <h3>Prezzo</h3>
+        <label class="check"><input type="checkbox" data-f="price">Solo prezzi visibili</label>
+      </div>
+      <div class="fgroup">
+        <h3>CCNL gestito</h3>
+        <label class="check"><input type="checkbox" data-ccnl="Commercio">Commercio</label>
+        <label class="check"><input type="checkbox" data-ccnl="Turismo">Turismo</label>
+        <label class="check"><input type="checkbox" data-ccnl="Metalmeccanico">Metalmeccanico</label>
+        <label class="check"><input type="checkbox" data-ccnl="Edilizia">Edilizia</label>
+        <label class="check"><input type="checkbox" data-ccnl="Lavoro domestico">Lavoro domestico</label>
+      </div>
+      <div class="fgroup">
+        <h3>Dimensione dell'azienda</h3>
+        <label class="check"><input type="checkbox" data-size="1-15">Da 1 a 15 dipendenti</label>
+        <label class="check"><input type="checkbox" data-size="16-50">Da 16 a 50</label>
+        <label class="check"><input type="checkbox" data-size="50+">Più di 50</label>
+      </div>
+      <div class="fgroup">
+        <h3>Distanza</h3>
+        <select id="dist" aria-label="Distanza massima">
+          <option value="999">Qualsiasi distanza</option>
+          <option value="5">Entro 5 km</option>
+          <option value="10">Entro 10 km</option>
+          <option value="30">Entro 30 km</option>
+        </select>
+      </div>
+
+      <div class="sheet-foot"><button class="btn btn-dark btn-block close-filters" id="show-n">Mostra i risultati</button></div>
+    </aside>
+    <div class="scrim"></div>
+
+    <section aria-label="Risultati">
+      <div class="toolbar">
+        <button class="btn btn-soft btn-sm open-filters"><i class="ph-bold ph-sliders-horizontal"></i>Filtri <span id="fcount"></span></button>
+        <span class="count" id="count">8 consulenti</span>
+        <label class="sort"><span>Ordina per</span>
+          <select id="sort" aria-label="Ordina per">
+            <option value="rel">Rilevanza</option>
+            <option value="rating">Valutazione</option>
+            <option value="dist">Distanza</option>
+            <option value="resp">Tempo di risposta</option>
+          </select>
+        </label>
+      </div>
+      <div class="active" id="active"></div>
+      <div class="results" id="results"></div>
+      <nav class="pages" aria-label="Pagine"><a href="#" class="on">1</a><a href="#">2</a><a href="#">3</a><a href="#">4</a><a href="#">5</a><a href="#">6</a><a href="#">Avanti</a></nav>
+      <p class="order-note">I profili "In evidenza" sono sponsorizzati e sempre dichiarati. <a href="#" class="link">Come ordiniamo i risultati</a></p>
+    </section>
+  </div>
+
+  <section class="guide">
+    <div>
+      <h2>Quanto costa un consulente del lavoro a Bari?</h2>
+      <p>Prezzi indicati dai consulenti di Bari che li mostrano sulla scheda, per l'elaborazione di una busta paga al mese.</p>
+      <div class="prices">
+        <div><b>15 €</b><span>il più basso</span></div>
+        <div><b>21 €</b><span>prezzo medio</span></div>
+        <div><b>32 €</b><span>il più alto</span></div>
+      </div>
+    </div>
+    <div class="faq">
+      <details open><summary>Come scelgo il consulente giusto?<i class="ph-bold ph-plus"></i></summary><p>Guarda il CCNL che gestisce, la dimensione delle aziende che segue e i voti per criterio, non solo la media. Chiedi una call di presentazione prima di decidere.</p></details>
+      <details><summary>Posso cambiare consulente durante l'anno?<i class="ph-bold ph-plus"></i></summary><p>Sì. Il nuovo consulente si occupa del passaggio dei dati e dei cedolini, di solito dall'inizio del mese successivo.</p></details>
+      <details><summary>Le recensioni sono vere?<i class="ph-bold ph-plus"></i></summary><p>Ogni recensione è legata a una fattura o a una lettera d'incarico controllata da un moderatore.</p></details>
+    </div>
+  </section>
+
+  <section class="more">
+    <h2>Altre ricerche vicine</h2>
+    <div class="row">
+      <a href="#" class="pill">Buste paga a Lecce</a>
+      <a href="#" class="pill">CCNL Turismo a Bari</a>
+      <a href="#" class="pill">Colf e badanti a Bari</a>
+      <a href="#" class="pill">Assunzioni a Modugno</a>
+      <a href="#" class="pill">Consulenti da remoto</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <a href="v2-1.html" class="logo"><span class="logo-mark"><i class="ph-bold ph-seal-check"></i></span>TrustCDL</a>
+      <p class="note">Demo con dati di esempio. Nomi, prezzi e recensioni sono fittizi.</p>
+    </div>
+    <div><h4>Per le aziende</h4><ul><li><a href="consulenti.html">Cerca un consulente</a></li><li><a href="#">Scrivi una recensione</a></li><li><a href="#">Calcolo costo dipendente</a></li></ul></div>
+    <div><h4>Per i consulenti</h4><ul><li><a href="#">Rivendica il profilo</a></li><li><a href="#">Piani e prezzi</a></li><li><a href="area-consulente.html">Area consulente</a></li></ul></div>
+    <div><h4>Trasparenza</h4><ul><li><a href="#">Come funzionano le recensioni</a></li><li><a href="#">Come ordiniamo i risultati</a></li><li><a href="#">Privacy</a></li></ul></div>
+  </div>
+</footer>
+
+<nav class="switcher" aria-label="Pagine della demo">
+  <a href="v2-1.html">Home</a>
+  <a href="consulenti.html" class="on">Lista</a>
+  <a href="consulente-pro.html"><span class="long">Profilo </span>Pro</a>
+  <a href="consulente-free.html"><span class="long">Profilo </span>Free</a>
+  <a href="area-consulente.html">Area<span class="long"> consulente</span></a>
+</nav>
+
+<script src="assets/trustcdl.js"></script>
+<script>
+const IMG = id => `https://images.unsplash.com/photo-${id}?w=200&h=200&fit=crop&crop=faces&q=70`;
+// Dati di esempio. plan: pro o free. price null = nascosto (piano Free o scelta del consulente).
+const PROS = [
+  { name:'Giulia Lorusso', studio:'Studio Lorusso', where:'Bari centro', km:0.8, img:'1573496359142-b8d87734a5a2', r:4.9, n:38, resp:3, price:22, call:true, remote:true, sp:true, plan:'pro', ccnl:['Turismo','Commercio'], size:['1-15'], href:'consulente-pro.html' },
+  { name:'Davide Melchiorre', studio:'Melchiorre Lavoro STP', where:'Bari, Poggiofranco', km:3.1, img:'1519085360753-af0119f7cbe7', r:4.8, n:29, resp:6, price:25, call:true, remote:false, plan:'pro', ccnl:['Metalmeccanico','Commercio'], size:['16-50','50+'] },
+  { name:'Martina Colella', studio:'Studio Colella', where:'Bari, Carrassi', km:2.2, img:'1494790108377-be9c29b29330', r:4.7, n:14, resp:5, price:20, call:true, remote:true, plan:'pro', ccnl:['Turismo','Commercio'], size:['1-15'] },
+  { name:'Serena Amoruso', studio:'Amoruso Consulenza', where:'Modugno', km:9.4, img:'1438761681033-6461ffad8d80', r:4.8, n:21, resp:4, price:19, call:false, remote:true, plan:'pro', ccnl:['Commercio'], size:['1-15','16-50'] },
+  { name:'Francesca Cirillo', studio:'Libera professionista', where:'Matera, lavora da remoto', km:64, img:'1580489944761-15a19d654956', r:4.9, n:17, resp:2, price:15, call:true, remote:true, plan:'pro', ccnl:['Lavoro domestico','Commercio'], size:['1-15'] },
+  { name:'Nicola Ventrella', studio:'Studio Ventrella', where:'Bari, Japigia', km:4.5, img:'1507003211169-0a1dd7228f2d', r:4.6, n:12, resp:24, price:null, call:false, remote:false, plan:'free', ccnl:['Edilizia','Metalmeccanico'], size:['16-50'], href:'consulente-free.html' },
+  { name:'Rocco Laterza', studio:'Laterza & Partners', where:'Altamura', km:28, img:'1472099645785-5658abf4ff4e', r:4.5, n:9, resp:48, price:null, call:false, remote:false, plan:'free', ccnl:['Edilizia'], size:['16-50','50+'] },
+  { name:'Michele De Santis', studio:'Studio De Santis', where:'Lecce, lavora da remoto', km:152, img:'1560250097-0b93528c311a', r:4.8, n:24, resp:5, price:19, call:true, remote:true, plan:'pro', ccnl:['Edilizia','Metalmeccanico'], size:['1-15','16-50'] },
+];
+const respLabel = h => h < 24 ? `Risponde in ${h} ore` : h === 24 ? 'Risponde in 1 giorno' : `Risponde in ${h / 24} giorni`;
+// Rilevanza: voto pesato sul numero di recensioni, meno una penalità per la distanza
+const score = p => p.r * Math.log(p.n + 1) - p.km / 50;
+const kmLabel = km => km < 10 ? `${String(km).replace('.', ',')} km` : `${Math.round(km)} km`;
+
+function card(p) {
+  const href = p.href || 'consulente-pro.html';
+  return `<article class="card${p.sp ? ' sp' : ''}">
+    <a href="${href}"><img src="${IMG(p.img)}" alt="${p.name}"></a>
+    <div>
+      <div class="top"><h2><a href="${href}">${p.name}</a></h2>${p.sp ? '<span class="sponsor">In evidenza</span>' : ''}</div>
+      <div class="studio">${p.studio}, ${p.where} <span class="muted">(${kmLabel(p.km)})</span></div>
+      <div class="rating"><span class="stars sm" data-r="${p.r}"></span><b>${String(p.r).replace('.', ',')}</b> ${p.n} recensioni verificate</div>
+      <div class="tags">
+        <span class="tag"><i class="ph-fill ph-seal-check" style="color:var(--gold)"></i>Albo verificato</span>
+        ${p.ccnl.map(c => `<span class="tag">CCNL ${c}</span>`).join('')}
+      </div>
+    </div>
+    <div class="side">
+      <span class="price">${p.price ? `da <b>${p.price} €</b> a cedolino` : 'Prezzo su richiesta'}</span>
+      <span class="fact"><i class="ph ph-timer"></i>${respLabel(p.resp)}</span>
+      ${p.call ? '<span class="fact"><i class="ph ph-video-camera"></i>Call gratuita</span>' : ''}
+      <div class="ctas"><a href="${href}#preventivo" class="btn btn-dark btn-sm">Richiedi preventivo</a><a href="${href}" class="btn btn-soft btn-sm" style="background:#fff">Profilo</a></div>
+    </div>
+  </article>`;
+}
+
+const results = document.getElementById('results');
+const boxes = [...document.querySelectorAll('.filters input[type=checkbox]')];
+const dist = document.getElementById('dist');
+const sort = document.getElementById('sort');
+
+function apply() {
+  const on = boxes.filter(b => b.checked);
+  const f = new Set(on.filter(b => b.dataset.f).map(b => b.dataset.f));
+  const ccnl = on.filter(b => b.dataset.ccnl).map(b => b.dataset.ccnl);
+  const size = on.filter(b => b.dataset.size).map(b => b.dataset.size);
+  const maxKm = +dist.value;
+  let list = PROS.filter(p =>
+    (!f.has('r45') || p.r >= 4.5) && (!f.has('r48') || p.r >= 4.8) &&
+    (!f.has('fast') || p.resp <= 24) && (!f.has('call') || p.call) &&
+    (!f.has('remote') || p.remote) && (!f.has('price') || p.price) &&
+    (!ccnl.length || ccnl.some(c => p.ccnl.includes(c))) &&
+    (!size.length || size.some(s => p.size.includes(s))) &&
+    (p.km <= maxKm || (maxKm < 999 && p.remote && f.has('remote'))));
+  const by = { rating: (a, b) => b.r - a.r || b.n - a.n, dist: (a, b) => a.km - b.km, resp: (a, b) => a.resp - b.resp,
+               rel: (a, b) => (b.sp ? 1 : 0) - (a.sp ? 1 : 0) || score(b) - score(a) };
+  list.sort(by[sort.value]);
+
+  results.innerHTML = list.length ? list.map(card).join('') :
+    `<div class="empty"><i class="ph ph-magnifying-glass"></i><h2>Nessun consulente con questi filtri</h2><p>Prova a togliere un filtro o ad allargare la distanza.</p><button class="btn btn-dark" id="reset">Togli tutti i filtri</button></div>`;
+  renderStars(results);
+  document.getElementById('count').textContent = `${list.length} consulent${list.length === 1 ? 'e' : 'i'}`;
+  document.getElementById('show-n').textContent = `Mostra ${list.length} risultat${list.length === 1 ? 'o' : 'i'}`;
+  const nActive = on.length + (maxKm < 999 ? 1 : 0);
+  document.getElementById('fcount').textContent = nActive ? `(${nActive})` : '';
+
+  const active = document.getElementById('active');
+  active.innerHTML = on.map((b, i) => `<button data-i="${boxes.indexOf(b)}">${b.parentElement.textContent.trim()}<i class="ph-bold ph-x"></i></button>`).join('') +
+    (maxKm < 999 ? `<button data-dist>${dist.selectedOptions[0].text}<i class="ph-bold ph-x"></i></button>` : '');
+  active.querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => {
+    if (btn.dataset.dist !== undefined) dist.value = '999'; else boxes[btn.dataset.i].checked = false;
+    apply();
+  }));
+  document.getElementById('reset')?.addEventListener('click', () => { boxes.forEach(b => b.checked = false); dist.value = '999'; apply(); });
+}
+[...boxes, dist, sort].forEach(el => el.addEventListener('change', apply));
+apply();
+
+// Filtri a scomparsa su tablet e telefono
+const panel = document.getElementById('filters');
+const scrim = document.querySelector('.scrim');
+const setPanel = open => { panel.classList.toggle('open', open); scrim.classList.toggle('open', open); document.body.style.overflow = open ? 'hidden' : ''; };
+document.querySelector('.open-filters').addEventListener('click', () => setPanel(true));
+document.querySelectorAll('.close-filters').forEach(b => b.addEventListener('click', () => setPanel(false)));
+scrim.addEventListener('click', () => setPanel(false));
+</script>
+</body>
+</html>

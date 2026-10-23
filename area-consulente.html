@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Area consulente · TrustCDL</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<link rel="stylesheet" href="assets/trustcdl.css">
+<style>
+/* Area privata del consulente. Stessa grammatica della demo: niente bordi, fondi grigi tenui. */
+body{background:var(--soft)}
+.app-bar{position:sticky;top:0;z-index:20;background:var(--bg);height:64px;display:flex;align-items:center;gap:16px;padding:0 24px}
+.app-bar .ttl{font-weight:600;color:var(--muted);margin-left:8px}
+.app-bar .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.icon-btn{position:relative;width:42px;height:42px;border-radius:999px;background:var(--soft);display:grid;place-items:center;font-size:19px;cursor:pointer}
+.icon-btn .dot{position:absolute;top:6px;right:6px;min-width:18px;height:18px;border-radius:999px;background:var(--yellow);font-size:.7rem;font-weight:700;display:grid;place-items:center;padding:0 4px}
+.me{display:flex;align-items:center;gap:10px;background:var(--soft);border-radius:999px;padding:4px 14px 4px 4px;font-weight:600;font-size:.92rem}
+.me img{width:34px;height:34px;border-radius:50%;object-fit:cover}
+
+.shell{display:grid;grid-template-columns:248px 1fr;gap:24px;max-width:1360px;margin:0 auto;padding:24px}
+.sidenav{position:sticky;top:88px;display:grid;gap:4px;align-content:start}
+.sidenav a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:14px;font-weight:600;color:var(--muted);transition:background .2s,color .2s}
+.sidenav a i{font-size:20px}
+.sidenav a:hover{background:var(--bg);color:var(--text)}
+.sidenav a.on{background:var(--bg);color:var(--text)}
+.sidenav a .badge{margin-left:auto;background:var(--yellow);color:var(--text);font-size:.75rem;font-weight:700;border-radius:999px;padding:2px 8px}
+.plan-card{margin-top:18px;background:var(--text);color:#fff;border-radius:20px;padding:18px}
+.plan-card .k{font-size:.8rem;color:rgba(255,255,255,.62)}
+.plan-card b{display:block;font-size:1.15rem;margin:2px 0 4px}
+.plan-card p{font-size:.86rem;color:rgba(255,255,255,.72);margin-bottom:14px}
+
+.main{display:grid;gap:18px;min-width:0}
+.card{background:var(--bg);border-radius:24px;padding:24px}
+.card h2{font-size:1.15rem;letter-spacing:-.015em}
+.ch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.ch a{font-weight:600;font-size:.9rem;color:var(--muted)}
+.ch a:hover{color:var(--text)}
+
+.hello{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;padding:8px 4px}
+.hello h1{font-size:clamp(1.6rem,2.8vw,2.2rem)}
+.hello p{color:var(--muted);margin-top:6px;font-size:1.02rem}
+.hello p b{color:var(--text)}
+.period{display:flex;background:var(--bg);border-radius:999px;padding:4px;gap:2px}
+.period button{padding:8px 14px;border-radius:999px;font-weight:600;font-size:.88rem;color:var(--muted);cursor:pointer}
+.period button.on{background:var(--text);color:#fff}
+
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.kpi{background:var(--bg);border-radius:24px;padding:22px}
+.kpi .k{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:.9rem;font-weight:500}
+.kpi .k i{font-size:18px;color:var(--gold)}
+.kpi .v{font-size:2.3rem;font-weight:700;letter-spacing:-.04em;line-height:1;margin:14px 0 8px}
+.kpi .d{font-size:.86rem;color:var(--muted)}
+.kpi .d b{color:var(--text)}
+.kpi.hi{background:var(--yellow)}
+.kpi.hi .k,.kpi.hi .d{color:rgba(20,20,20,.72)}
+.kpi.hi .k i{color:var(--text)}
+
+.grid2{display:grid;grid-template-columns:1.7fr 1fr;gap:18px}
+.chart{position:relative;height:240px}
+.chart svg{display:block;width:100%;height:100%;overflow:visible}
+.chart .tip{position:absolute;pointer-events:none;background:var(--text);color:#fff;border-radius:12px;padding:8px 12px;font-size:.84rem;white-space:nowrap;transform:translate(-50%,calc(-100% - 12px));opacity:0;transition:opacity .15s}
+.chart .tip b{display:block;font-size:1rem}
+.chart-note{font-size:.84rem;color:var(--muted);margin-top:10px}
+
+.compare{display:grid;gap:16px}
+.cmp .row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.cmp .row span{color:var(--muted);font-size:.9rem}
+.cmp .row b{font-size:1.25rem;letter-spacing:-.02em}
+.cmp .row b small{font-size:.85rem;color:var(--muted);font-weight:500}
+.cmp .vs{font-size:.84rem;color:var(--muted);margin-top:2px}
+.cmp .vs strong{color:var(--gold)}
+
+.reqs{display:grid;gap:8px}
+.req{display:grid;grid-template-columns:44px 1fr auto auto;gap:14px;align-items:center;background:var(--soft);border-radius:18px;padding:14px 16px}
+.req .av{width:44px;height:44px;border-radius:14px;background:#fff;display:grid;place-items:center;font-size:20px}
+.req b{display:block;font-size:.98rem}
+.req small{color:var(--muted);font-size:.84rem}
+.status{font-size:.8rem;font-weight:700;padding:5px 11px;border-radius:999px;white-space:nowrap;background:#fff}
+.status.new{background:var(--yellow)}
+.status.won{background:var(--text);color:#fff}
+.status.lost{color:var(--muted)}
+.req .btn{height:38px;padding:0 16px;font-size:.88rem}
+
+.review-reply .r-top{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ini{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.85rem;background:var(--yellow-pale);color:var(--gold);flex:none}
+.review-reply .r-top b{display:block;font-size:.95rem}
+.review-reply .r-top small{color:var(--muted);font-size:.82rem}
+.review-reply blockquote{background:var(--soft);border-radius:16px;padding:14px 16px;margin:10px 0 14px;font-size:.95rem}
+.review-reply textarea{min-height:76px;resize:vertical;margin-bottom:10px}
+.replied{background:var(--yellow-pale);border-radius:14px;padding:12px 14px;font-size:.92rem}
+.replied b{display:block;font-size:.84rem}
+
+.invite{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center}
+.qr{width:112px;height:112px;border-radius:18px;background:var(--soft);display:grid;place-items:center;font-size:70px}
+.invite p{color:var(--muted);font-size:.92rem;margin:4px 0 12px}
+.copy{display:flex;gap:8px;align-items:center;background:var(--soft);border-radius:999px;padding:4px 4px 4px 14px;font-size:.88rem}
+.copy span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)}
+.copy .btn{height:34px;padding:0 14px;font-size:.85rem}
+
+.progress{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.progress .pct{font-size:2rem;font-weight:700;letter-spacing:-.04em}
+.bar{flex:1;height:10px;border-radius:99px;background:var(--soft);overflow:hidden}
+.bar i{display:block;height:100%;width:85%;background:var(--yellow);border-radius:99px}
+.todo{display:grid;gap:6px}
+.todo div{display:flex;align-items:center;gap:10px;font-size:.93rem;padding:6px 0}
+.todo i{font-size:20px}
+.todo .done{color:var(--muted)}
+.todo .done i{color:var(--gold)}
+.todo .next{font-weight:600}
+.todo .next em{margin-left:auto;font-style:normal;font-size:.82rem;color:var(--gold);font-weight:700}
+
+.upsell{display:flex;align-items:center;gap:22px;background:var(--yellow-pale);border-radius:24px;padding:22px 26px}
+.upsell i.big{font-size:34px;color:var(--gold);flex:none}
+.upsell b{display:block;font-size:1.05rem}
+.upsell p{color:var(--muted);font-size:.92rem}
+.upsell .btn{margin-left:auto;flex:none}
+
+@media (max-width:1100px){
+  .shell{grid-template-columns:1fr;padding:16px}
+  .sidenav{position:static;display:flex;overflow-x:auto;gap:6px;margin:0 -16px;padding:0 16px 4px;scrollbar-width:none}
+  .sidenav::-webkit-scrollbar{display:none}
+  .sidenav a{flex:none;background:var(--bg);padding:9px 14px}
+  .sidenav a.on{background:var(--text);color:#fff}
+  .sidenav .plan-card{display:none}
+  .kpis{grid-template-columns:1fr 1fr}
+  .grid2{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+  .app-bar{padding:0 16px}
+  .app-bar .ttl,.me span,.app-bar .btn-sm span{display:none}
+  .app-bar .btn-sm{width:42px;height:42px;padding:0}
+  .app-bar .right{gap:8px}
+  .me{padding:4px}
+  .hello{padding:4px 0}
+  .period{width:100%}
+  .period button{flex:1}
+  .kpis{gap:10px}
+  .kpi{padding:16px;border-radius:20px}
+  .kpi .v{font-size:1.8rem;margin:10px 0 6px}
+  .kpi .k{font-size:.82rem}
+  .kpi .d{font-size:.78rem}
+  .card{padding:18px;border-radius:20px}
+  .chart{height:200px}
+  .req{grid-template-columns:40px 1fr auto;gap:10px 12px}
+  .req .av{width:40px;height:40px}
+  .req .btn{grid-column:1/-1;width:100%}
+  .invite{grid-template-columns:1fr}
+  .qr{display:none}
+  .upsell{flex-wrap:wrap;padding:20px}
+  .upsell .btn{margin-left:0;width:100%}
+}
+</style>
+</head>
+<body>
+
+<header class="app-bar">
+  <a href="v2-1.html" class="logo"><span class="logo-mark"><i class="ph-bold ph-seal-check"></i></span>TrustCDL</a>
+  <span class="ttl">Area consulente</span>
+  <div class="right">
+    <a href="consulente-pro.html" class="btn btn-soft btn-sm"><i class="ph ph-eye"></i><span>La tua scheda</span></a>
+    <button class="icon-btn" aria-label="Notifiche, 4 nuove"><i class="ph ph-bell"></i><span class="dot">4</span></button>
+    <a href="#" class="me"><img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=80&h=80&fit=crop&crop=faces&q=70" alt=""><span>Giulia</span></a>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="sidenav" aria-label="Area consulente">
+    <a href="#" class="on"><i class="ph ph-squares-four"></i>Panoramica</a>
+    <a href="#richieste"><i class="ph ph-tray"></i>Richieste<span class="badge">3</span></a>
+    <a href="#recensioni"><i class="ph ph-star"></i>Recensioni<span class="badge">1</span></a>
+    <a href="#profilo"><i class="ph ph-user-circle"></i>Il mio profilo</a>
+    <a href="#"><i class="ph ph-chart-line-up"></i>Statistiche</a>
+    <a href="#"><i class="ph ph-calendar-blank"></i>Agenda</a>
+    <a href="#"><i class="ph ph-code"></i>Widget recensioni</a>
+    <a href="#"><i class="ph ph-receipt"></i>Piano e fatture</a>
+    <div class="plan-card">
+      <span class="k">Il tuo piano</span>
+      <b>Pro, annuale</b>
+      <p>Si rinnova il 14 gennaio 2027.</p>
+      <a href="#" class="btn btn-yellow btn-sm btn-block">Passa a Premium</a>
+    </div>
+  </nav>
+
+  <main class="main">
+    <section class="hello">
+      <div>
+        <h1>Buongiorno Giulia</h1>
+        <p id="headline">Negli ultimi 30 giorni TrustCDL ti ha portato <b>23 richieste di preventivo</b>.</p>
+      </div>
+      <div class="period" role="group" aria-label="Periodo">
+        <button data-p="7">7 giorni</button>
+        <button data-p="30" class="on">30 giorni</button>
+        <button data-p="365">12 mesi</button>
+      </div>
+    </section>
+
+    <section class="kpis" aria-label="I tuoi numeri">
+      <div class="kpi hi"><span class="k"><i class="ph-bold ph-tray"></i>Richieste ricevute</span><div class="v" id="k-req">23</div><span class="d" id="d-req"><b>+5</b> rispetto al periodo precedente</span></div>
+      <div class="kpi"><span class="k"><i class="ph-bold ph-eye"></i>Visite alla scheda</span><div class="v" id="k-vis">0</div><span class="d" id="d-vis"><b>+18%</b> rispetto al periodo precedente</span></div>
+      <div class="kpi"><span class="k"><i class="ph-bold ph-handshake"></i>Nuovi clienti</span><div class="v" id="k-won">6</div><span class="d" id="d-won">il <b>26%</b> delle richieste</span></div>
+      <div class="kpi"><span class="k"><i class="ph-bold ph-ranking"></i>Posizione media</span><div class="v" id="k-pos">2,4</div><span class="d">nelle ricerche "buste paga a Bari"</span></div>
+    </section>
+
+    <section class="grid2">
+      <div class="card">
+        <div class="ch"><h2 id="chart-title">Visite alla scheda, ultimi 30 giorni</h2></div>
+        <div class="chart" id="chart"><div class="tip" id="tip"></div></div>
+        <table class="sr" id="chart-table"><caption>Visite alla scheda</caption><thead><tr><th>Periodo</th><th>Visite</th></tr></thead><tbody></tbody></table>
+        <p class="chart-note">Le visite salgono il martedì e il mercoledì, quando le aziende preparano le paghe.</p>
+      </div>
+      <div class="card compare">
+        <div class="ch" style="margin-bottom:0"><h2>Tu e la media di Bari</h2></div>
+        <div class="cmp"><div class="row"><span>Valutazione</span><b>4,9</b></div><div class="vs">Media provinciale 4,7. <strong>Sei tra i primi 5</strong></div></div>
+        <div class="cmp"><div class="row"><span>Tempo di risposta</span><b>3 <small>ore</small></b></div><div class="vs">Media provinciale 19 ore</div></div>
+        <div class="cmp"><div class="row"><span>Recensioni con risposta</span><b>100<small>%</small></b></div><div class="vs">Media provinciale 61%</div></div>
+        <div class="cmp"><div class="row"><span>Da richiesta a cliente</span><b>26<small>%</small></b></div><div class="vs">Media provinciale 18%</div></div>
+      </div>
+    </section>
+
+    <section class="card" id="richieste">
+      <div class="ch"><h2>Richieste di preventivo</h2><a href="#">Vedi tutte</a></div>
+      <div class="reqs">
+        <div class="req"><span class="av"><i class="ph ph-fork-knife"></i></span><div><b>Ristorante, 9 dipendenti, CCNL Turismo</b><small>Buste paga, vuole cambiare consulente da gennaio. Ricevuta 2 ore fa</small></div><span class="status new">Nuova</span><button class="btn btn-dark reply-btn">Rispondi</button></div>
+        <div class="req"><span class="av"><i class="ph ph-house-line"></i></span><div><b>Famiglia, assunzione di una badante</b><small>Lavoro domestico, convivente. Ricevuta ieri</small></div><span class="status new">Nuova</span><button class="btn btn-dark reply-btn">Rispondi</button></div>
+        <div class="req"><span class="av"><i class="ph ph-storefront"></i></span><div><b>Negozio, primo dipendente</b><small>Assunzione e incentivi. Ricevuta 2 giorni fa</small></div><span class="status new">Nuova</span><button class="btn btn-dark reply-btn">Rispondi</button></div>
+        <div class="req"><span class="av"><i class="ph ph-bed"></i></span><div><b>Hotel, 22 dipendenti stagionali</b><small>Preventivo inviato il 16 ottobre</small></div><span class="status">In trattativa</span><button class="btn btn-soft" style="background:#fff">Apri</button></div>
+        <div class="req"><span class="av"><i class="ph ph-coffee"></i></span><div><b>Bar, 4 dipendenti</b><small>Incarico firmato il 9 ottobre</small></div><span class="status won">Nuovo cliente</span><button class="btn btn-soft" style="background:#fff">Apri</button></div>
+      </div>
+    </section>
+
+    <section class="grid2" id="recensioni">
+      <div class="card review-reply">
+        <div class="ch"><h2>Una recensione aspetta la tua risposta</h2></div>
+        <div class="r-top"><span class="ini">AC</span><div><b>Antonella C.</b><small>Studio dentistico, 6 dipendenti, verificata con fattura</small></div></div>
+        <span class="stars sm" data-r="4"></span>
+        <blockquote>"Molto competente sul welfare. All'inizio qualche ritardo nell'invio dei cedolini, poi tutto regolare."</blockquote>
+        <form id="reply-form">
+          <label class="label" for="reply">La tua risposta pubblica</label>
+          <textarea id="reply" class="field-soft">Grazie Antonella, nei primi mesi abbiamo riorganizzato le scadenze: da settembre i cedolini partono sempre entro il giorno 10.</textarea>
+          <button class="btn btn-dark">Pubblica la risposta</button>
+        </form>
+        <div class="replied" hidden><b>Risposta pubblicata</b>La vedono tutti sulla tua scheda, sotto la recensione.</div>
+      </div>
+      <div class="card">
+        <div class="ch"><h2>Invita i tuoi clienti</h2></div>
+        <div class="invite">
+          <div class="qr" aria-hidden="true"><i class="ph ph-qr-code"></i></div>
+          <div>
+            <b>Ogni cliente può lasciarti una recensione in 2 minuti</b>
+            <p>Manda il link via email o stampa il QR per lo studio. Non si possono offrire sconti in cambio.</p>
+            <div class="copy"><span>trustcdl.it/recensisci/giulia-lorusso</span><button class="btn btn-dark copy-btn">Copia</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" id="profilo">
+      <div class="ch"><h2>Completa il profilo</h2><a href="consulente-pro.html">Vedi la scheda pubblica</a></div>
+      <div class="progress"><span class="pct">85%</span><div class="bar" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Profilo completo all'85%"><i></i></div></div>
+      <div class="todo">
+        <div class="done"><i class="ph-fill ph-check-circle"></i>Foto, biografia e verifica Albo</div>
+        <div class="done"><i class="ph-fill ph-check-circle"></i>Servizi con i prezzi</div>
+        <div class="done"><i class="ph-fill ph-check-circle"></i>Specializzazioni e CCNL</div>
+        <div class="next"><i class="ph ph-circle"></i>Aggiungi 3 foto dello studio<em>+10%</em></div>
+        <div class="next"><i class="ph ph-circle"></i>Collega Google Calendar all'agenda<em>+5%</em></div>
+      </div>
+    </section>
+
+    <section class="upsell">
+      <i class="ph-fill ph-crown-simple big"></i>
+      <div><b>Con Premium compari tra i primi 3 consigliati</b><p>Nel "Fatti consigliare" le aziende ricevono solo 3 nomi. Premium ti dà la priorità, a 59 € al mese.</p></div>
+      <a href="#" class="btn btn-dark">Scopri Premium</a>
+    </section>
+  </main>
+</div>
+
+<nav class="switcher" aria-label="Pagine della demo">
+  <a href="v2-1.html">Home</a>
+  <a href="consulenti.html">Lista</a>
+  <a href="consulente-pro.html"><span class="long">Profilo </span>Pro</a>
+  <a href="consulente-free.html"><span class="long">Profilo </span>Free</a>
+  <a href="area-consulente.html" class="on">Area<span class="long"> consulente</span></a>
+</nav>
+
+<script src="assets/trustcdl.js"></script>
+<script>
+// Dati di esempio: visite giornaliere degli ultimi 30 giorni (24 settembre - 23 ottobre 2026)
+const START = new Date(2026, 8, 24);
+const BUMP = [-9, 7, 12, 11, 4, -2, -14]; // dal lunedì alla domenica
+const NOISE = [3, -2, 5, 0, -4, 2, 6, -3, 1, 4, -1, 3, -5, 2, 0, 5, -2, 4, 1, -3, 6, 2, -1, 3, 5, -2, 4, 1, 3, 6];
+const DAILY = NOISE.map((n, i) => {
+  const d = new Date(START); d.setDate(START.getDate() + i);
+  const wd = (d.getDay() + 6) % 7;
+  return { label: d.toLocaleDateString('it-IT', { day: 'numeric', month: 'short' }), v: Math.round(36 + i * 0.6 + BUMP[wd] + n) };
+});
+const MONTHS = ['nov','dic','gen','feb','mar','apr','mag','giu','lug','ago','set','ott'];
+const MONTHLY = [412, 388, 590, 655, 702, 744, 768, 731, 640, 512, 1012, 0].map((v, i) => ({ label: MONTHS[i], v }));
+MONTHLY[11].v = DAILY.reduce((s, d) => s + d.v, 0);
+
+const PERIODS = {
+  7:   { data: DAILY.slice(-7), title: 'Visite alla scheda, ultimi 7 giorni', req: 6, dReq: '+2', won: 2, pct: '33%', dVis: '+11%', pos: '2,1', words: 'Negli ultimi 7 giorni TrustCDL ti ha portato' },
+  30:  { data: DAILY, title: 'Visite alla scheda, ultimi 30 giorni', req: 23, dReq: '+5', won: 6, pct: '26%', dVis: '+18%', pos: '2,4', words: 'Negli ultimi 30 giorni TrustCDL ti ha portato' },
+  365: { data: MONTHLY, title: 'Visite alla scheda, ultimi 12 mesi', req: 214, dReq: '+61', won: 51, pct: '24%', dVis: '+42%', pos: '3,0', words: 'Negli ultimi 12 mesi TrustCDL ti ha portato' },
+};
+const fmt = n => n.toLocaleString('it-IT');
+
+const chart = document.getElementById('chart');
+const tip = document.getElementById('tip');
+let current = PERIODS[30].data;
+
+function draw() {
+  const data = current;
+  const W = chart.clientWidth, H = chart.clientHeight, padL = 34, padB = 26, padT = 10;
+  const max = Math.ceil(Math.max(...data.map(d => d.v)) * 1.15 / 10) * 10;
+  const x = i => padL + (W - padL - 8) * (data.length === 1 ? 0.5 : i / (data.length - 1));
+  const y = v => padT + (H - padT - padB) * (1 - v / max);
+  const pts = data.map((d, i) => [x(i), y(d.v)]);
+  const line = pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+  const area = `${line} L ${x(data.length - 1)} ${y(0)} L ${x(0)} ${y(0)} Z`;
+  const ticks = [0, max / 2, max];
+  const every = Math.ceil(data.length / 6);
+  chart.querySelector('svg')?.remove();
+  chart.insertAdjacentHTML('afterbegin', `<svg role="img" aria-label="${document.getElementById('chart-title').textContent}">
+    ${ticks.map(t => `<line x1="${padL}" x2="${W}" y1="${y(t)}" y2="${y(t)}" stroke="#ECECE7" stroke-width="1"/>
+      <text x="${padL - 8}" y="${y(t) + 4}" text-anchor="end" font-size="11" fill="#5C5C58">${fmt(Math.round(t))}</text>`).join('')}
+    ${data.map((d, i) => i % every === 0 || i === data.length - 1 ? `<text x="${x(i)}" y="${H - 6}" text-anchor="middle" font-size="11" fill="#5C5C58">${d.label}</text>` : '').join('')}
+    <path d="${area}" fill="#FFF4CC"/>
+    <path d="${line}" fill="none" stroke="#141414" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <line id="cross" y1="${padT}" y2="${y(0)}" stroke="#141414" stroke-width="1" stroke-dasharray="3 3" opacity="0"/>
+    <circle id="dot" r="5" fill="#FFC72C" stroke="#fff" stroke-width="2" opacity="0"/>
+    <circle cx="${pts.at(-1)[0]}" cy="${pts.at(-1)[1]}" r="5" fill="#FFC72C" stroke="#fff" stroke-width="2"/>
+    <rect x="${padL}" y="0" width="${W - padL}" height="${H}" fill="transparent" id="hit"/>
+  </svg>`);
+  const svg = chart.querySelector('svg'), cross = svg.querySelector('#cross'), dot = svg.querySelector('#dot');
+  const hit = svg.querySelector('#hit');
+  const show = ev => {
+    const r = svg.getBoundingClientRect();
+    const px = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left;
+    const i = Math.max(0, Math.min(data.length - 1, Math.round((px - padL) / (W - padL - 8) * (data.length - 1))));
+    const [cx, cy] = pts[i];
+    cross.setAttribute('x1', cx); cross.setAttribute('x2', cx); cross.setAttribute('opacity', 1);
+    dot.setAttribute('cx', cx); dot.setAttribute('cy', cy); dot.setAttribute('opacity', 1);
+    tip.innerHTML = `<b>${fmt(data[i].v)} visite</b>${data[i].label}`;
+    tip.style.left = Math.min(Math.max(cx, 60), W - 60) + 'px'; tip.style.top = cy + 'px'; tip.style.opacity = 1;
+  };
+  const hide = () => { cross.setAttribute('opacity', 0); dot.setAttribute('opacity', 0); tip.style.opacity = 0; };
+  hit.addEventListener('mousemove', show); hit.addEventListener('touchstart', show, { passive: true });
+  hit.addEventListener('touchmove', show, { passive: true }); hit.addEventListener('mouseleave', hide);
+  document.querySelector('#chart-table tbody').innerHTML = data.map(d => `<tr><td>${d.label}</td><td>${d.v}</td></tr>`).join('');
+}
+
+function setPeriod(p) {
+  const P = PERIODS[p];
+  current = P.data;
+  document.getElementById('chart-title').textContent = P.title;
+  document.getElementById('headline').innerHTML = `${P.words} <b>${P.req} richieste di preventivo</b>.`;
+  document.getElementById('k-req').textContent = fmt(P.req);
+  document.getElementById('d-req').innerHTML = `<b>${P.dReq}</b> rispetto al periodo precedente`;
+  document.getElementById('k-vis').textContent = fmt(P.data.reduce((s, d) => s + d.v, 0));
+  document.getElementById('d-vis').innerHTML = `<b>${P.dVis}</b> rispetto al periodo precedente`;
+  document.getElementById('k-won').textContent = P.won;
+  document.getElementById('d-won').innerHTML = `il <b>${P.pct}</b> delle richieste`;
+  document.getElementById('k-pos').textContent = P.pos;
+  draw();
+}
+document.querySelectorAll('.period button').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.period button').forEach(x => x.classList.toggle('on', x === b));
+  setPeriod(b.dataset.p);
+}));
+new ResizeObserver(draw).observe(chart);
+setPeriod(30);
+
+// Rispondi a una richiesta: passa a "In trattativa"
+document.querySelectorAll('.reply-btn').forEach(b => b.addEventListener('click', () => {
+  const st = b.parentElement.querySelector('.status');
+  st.className = 'status'; st.textContent = 'In trattativa';
+  b.className = 'btn btn-soft'; b.style.background = '#fff'; b.textContent = 'Apri';
+  const badge = document.querySelector('.sidenav a[href="#richieste"] .badge');
+  const n = document.querySelectorAll('.status.new').length;
+  if (badge) n ? badge.textContent = n : badge.remove();
+}));
+
+// Pubblica la risposta alla recensione
+document.getElementById('reply-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const txt = document.getElementById('reply').value.trim();
+  if (!txt) return;
+  e.target.hidden = true;
+  const box = document.querySelector('.replied');
+  box.innerHTML = `<b>Risposta pubblicata</b>${txt}`;
+  box.hidden = false;
+  document.querySelector('.sidenav a[href="#recensioni"] .badge')?.remove();
+});
+
+// Copia il link di invito
+document.querySelector('.copy-btn').addEventListener('click', async e => {
+  try { await navigator.clipboard.writeText('https://trustcdl.it/recensisci/giulia-lorusso'); } catch {}
+  e.target.textContent = 'Copiato';
+  setTimeout(() => e.target.textContent = 'Copia', 1800);
+});
+</script>
+</body>
+</html>

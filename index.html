@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TrustCDL · Demo</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web@2.1.1"></script>
+<link rel="stylesheet" href="assets/trustcdl.css">
+<style>
+.intro{padding:72px 0 40px;max-width:720px}
+.intro h1{font-size:clamp(2.2rem,4.6vw,3.4rem);margin:18px 0 14px}
+.intro p{color:var(--muted);font-size:1.1rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pg{background:var(--soft);border-radius:24px;padding:24px;display:flex;flex-direction:column;gap:10px;min-height:190px;transition:background .2s,transform .3s cubic-bezier(.16,1,.3,1)}
+.pg:hover{background:var(--soft-2);transform:translateY(-3px)}
+.pg.main{background:var(--yellow);grid-column:span 2}
+.pg.main:hover{background:var(--yellow-hover)}
+.pg i.ic{font-size:28px}
+.pg h2{font-size:1.25rem}
+.pg p{color:var(--muted);font-size:.95rem}
+.pg.main p{color:rgba(20,20,20,.75)}
+.pg .go{margin-top:auto;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+h3.sec{font-size:1.1rem;margin:48px 0 14px}
+.older{display:flex;flex-wrap:wrap;gap:8px}
+.note{color:var(--muted);font-size:.9rem;margin-top:48px;max-width:60ch}
+@media (max-width:900px){.grid{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.grid{grid-template-columns:1fr}.pg.main{grid-column:auto}.intro{padding:40px 0 28px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="intro">
+    <a href="v2-1.html" class="logo"><span class="logo-mark"><i class="ph-bold ph-seal-check"></i></span>TrustCDL</a>
+    <h1>La demo della piattaforma</h1>
+    <p>Il marketplace per scegliere un consulente del lavoro con profili verificati sull'Albo e recensioni solo da clienti reali. Puoi navigare tra le pagine come farebbe un'azienda o un consulente.</p>
+  </section>
+
+  <div class="grid">
+    <a href="v2-1.html" class="pg main"><i class="ph ph-house-line ic"></i><h2>Home page</h2><p>Ricerca, consulenti in evidenza, situazioni, recensioni verificate e la sezione per i consulenti.</p><span class="go">Apri<i class="ph-bold ph-arrow-right"></i></span></a>
+    <a href="consulenti.html" class="pg"><i class="ph ph-list-magnifying-glass ic"></i><h2>Lista consulenti</h2><p>Risultati per "buste paga a Bari" con filtri e ordinamento.</p><span class="go">Apri<i class="ph-bold ph-arrow-right"></i></span></a>
+    <a href="consulente-pro.html" class="pg"><i class="ph ph-seal-check ic"></i><h2>Profilo con piano Pro</h2><p>Scheda completa con prezzi, call e articoli.</p><span class="go">Apri<i class="ph-bold ph-arrow-right"></i></span></a>
+    <a href="consulente-free.html" class="pg"><i class="ph ph-user ic"></i><h2>Profilo con piano Free</h2><p>Scheda base, con i consulenti simili in zona.</p><span class="go">Apri<i class="ph-bold ph-arrow-right"></i></span></a>
+    <a href="area-consulente.html" class="pg"><i class="ph ph-chart-line-up ic"></i><h2>Area del consulente</h2><p>Richieste, visite, recensioni e piano.</p><span class="go">Apri<i class="ph-bold ph-arrow-right"></i></span></a>
+  </div>
+
+  <h3 class="sec">Prime versioni della home</h3>
+  <div class="older">
+    <a href="v1-morbida.html" class="pill">V1 Morbida</a>
+    <a href="v1-bianca.html" class="pill">V1 Bianca</a>
+    <a href="v2-albo.html" class="pill">V2 Albo</a>
+    <a href="v2-bianca.html" class="pill">V2 Bianca</a>
+  </div>
+
+  <p class="note">Demo con dati di esempio: nomi, prezzi e recensioni sono fittizi. I dati di mercato (numero di consulenti, imprese assistite, STP) sono reali, con fonte indicata in pagina.</p>
+</main>
+<footer style="margin-top:56px;padding-bottom:56px"><div class="wrap"><span class="muted">TrustCDL, demo interna. Ottobre 2026.</span></div></footer>
+</body>
+</html>
